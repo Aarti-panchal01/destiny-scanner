@@ -32,6 +32,10 @@ export interface NumerologyProfile {
   lifeLessons: string[];
   luckyColors: string[];
   luckyGemstones: string[];
+  elementInfluence?: {
+    primaryElement: string;
+    qualities: string[];
+  };
   personalYear?: {
     number: number;
     meaning: string;
@@ -960,79 +964,167 @@ export const analyzeNameNumerology = (name: string): { vibration: number; qualit
 };
 
 /**
- * Calculate spiritual path number based on birth date
+ * Calculate spiritual path based on birth date
  */
 export const calculateSpiritualPath = (birthDate: Date): { number: number; purpose: string; practices: string[] } => {
   const day = birthDate.getDate();
   const month = birthDate.getMonth() + 1;
   const year = birthDate.getFullYear();
   
-  // Calculate path number using day, month, and year
-  let pathSum = day + month + year;
+  // Calculate spiritual path number (using life path calculation)
+  let sum = 0;
+  
+  // Add day
+  sum += day;
+  
+  // Add month
+  sum += month;
+  
+  // Add year
+  sum += year.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
   
   // Reduce to a single digit, except for master numbers
-  while (pathSum > 9 && pathSum !== 11 && pathSum !== 22 && pathSum !== 33) {
+  let spiritualPath = sum;
+  while (spiritualPath > 9 && spiritualPath !== 11 && spiritualPath !== 22 && spiritualPath !== 33) {
     let tempSum = 0;
-    pathSum.toString().split('').forEach(digit => {
+    spiritualPath.toString().split('').forEach(digit => {
       tempSum += parseInt(digit);
     });
-    pathSum = tempSum;
+    spiritualPath = tempSum;
   }
   
-  const spiritualPathMeanings: Record<number, { purpose: string; practices: string[] }> = {
+  const spiritualPaths: Record<number, { purpose: string; practices: string[] }> = {
     1: {
-      purpose: "To pioneer new spiritual understandings and lead others with your individual insights.",
-      practices: ["Solo meditation", "Innovative spiritual practices", "Leadership in spiritual communities", "Developing unique spiritual viewpoints", "Pioneering new spiritual paths"]
+      purpose: "To develop individuality and leadership while maintaining spiritual awareness.",
+      practices: [
+        "Daily self-affirmations",
+        "Solo meditation retreats",
+        "Leadership in spiritual communities",
+        "Innovative approaches to traditional practices",
+        "Setting intentions with each new moon"
+      ]
     },
     2: {
-      purpose: "To create harmony and build bridges between different spiritual traditions.",
-      practices: ["Partner meditation", "Listening to inner guidance", "Peace-making", "Intuitive development", "Finding balance between spiritual polarities"]
+      purpose: "To develop spiritual partnerships and intuitive connection with others.",
+      practices: [
+        "Partner meditation",
+        "Energy healing exchanges",
+        "Moon rituals",
+        "Intuitive development exercises",
+        "Finding sacred balance in relationships"
+      ]
     },
     3: {
       purpose: "To express spiritual truths creatively and communicate divine inspiration.",
-      practices: ["Creative visualization", "Expressing spirituality through art", "Joyful celebration of divine", "Teaching through storytelling", "Channeling higher wisdom through creative works"]
+      practices: [
+        "Mantras and chanting",
+        "Creative visualization",
+        "Expressive arts as spiritual practice",
+        "Teaching spiritual concepts",
+        "Joyful connection to divine through dance or music"
+      ]
     },
     4: {
-      purpose: "To build solid spiritual foundations and create practical systems for spiritual growth.",
-      practices: ["Disciplined spiritual routines", "Grounding practices", "Creating sacred spaces", "Study of spiritual texts", "Building spiritual community structures"]
+      purpose: "To build solid spiritual foundations and practical application of wisdom.",
+      practices: [
+        "Consistent daily spiritual practice",
+        "Study of ancient texts and traditions",
+        "Creating sacred spaces",
+        "Grounding exercises in nature",
+        "Service to spiritual communities"
+      ]
     },
     5: {
-      purpose: "To experience spiritual freedom and embrace diverse paths to truth.",
-      practices: ["Movement meditation", "Exploration of different spiritual traditions", "Freedom from dogma", "Adventure in consciousness", "Embracing change as spiritual practice"]
+      purpose: "To experience spiritual freedom and share the wisdom of change.",
+      practices: [
+        "Conscious breathing techniques",
+        "Travel to sacred sites",
+        "Trying diverse spiritual traditions",
+        "Freedom meditation",
+        "Teaching the wisdom of adaptation"
+      ]
     },
     6: {
-      purpose: "To nurture others spiritually and create harmony in your spiritual community.",
-      practices: ["Service to others", "Creating beauty as spiritual practice", "Family spiritual traditions", "Healing work", "Balancing spiritual and material responsibilities"]
+      purpose: "To create harmony and nurture spiritual growth in self and others.",
+      practices: [
+        "Creating beauty as spiritual practice",
+        "Family or community rituals",
+        "Heart-centered meditation",
+        "Nurturing others on their spiritual path",
+        "Finding divine in domestic life"
+      ]
     },
     7: {
-      purpose: "To seek spiritual truth through analysis and contemplation of life's mysteries.",
-      practices: ["Deep meditation", "Spiritual research", "Metaphysical study", "Contemplative practices", "Developing psychic abilities"]
+      purpose: "To seek spiritual knowledge and develop inner wisdom.",
+      practices: [
+        "Deep study of metaphysical subjects",
+        "Silent retreats",
+        "Analytical meditation",
+        "Developing psychic abilities",
+        "Connecting to spiritual guides"
+      ]
     },
     8: {
-      purpose: "To manifest spiritual abundance and use material resources for higher purposes.",
-      practices: ["Abundance meditation", "Conscious manifestation", "Spiritual leadership", "Creating prosperity with purpose", "Building spiritual-material bridges"]
+      purpose: "To master spiritual abundance and use power for the greater good.",
+      practices: [
+        "Prosperity rituals with spiritual focus",
+        "Energy management practices",
+        "Manifestation work",
+        "Conscious leadership",
+        "Balancing material and spiritual worlds"
+      ]
     },
     9: {
-      purpose: "To serve humanity with universal love and compassion.",
-      practices: ["Compassion meditation", "Humanitarian service", "Universal spiritual views", "Forgiveness work", "Transcending spiritual limitations"]
+      purpose: "To achieve spiritual completion and serve humanity with compassion.",
+      practices: [
+        "Universal love meditation",
+        "Humanitarian service",
+        "Forgiveness practices",
+        "Connecting with collective consciousness",
+        "Teaching spiritual wisdom"
+      ]
     },
     11: {
-      purpose: "To inspire spiritual awakening in others through your intuitive insights.",
-      practices: ["Channel spiritual information", "Intuitive guidance work", "Inspirational speaking or writing", "Visionary art", "Raising collective consciousness"]
+      purpose: "To channel spiritual insights and inspire others through intuitive awareness.",
+      practices: [
+        "Channel writing or speaking",
+        "Light work",
+        "Teaching through inspiration",
+        "Dream journaling",
+        "Working with high-frequency energy"
+      ]
     },
     22: {
-      purpose: "To build practical spiritual structures that transform society on a large scale.",
-      practices: ["Manifestation of spiritual communities", "Creating spiritual educational systems", "Building bridges between science and spirituality", "Transforming social structures", "Practical application of spiritual principles"]
+      purpose: "To build structures that support spiritual evolution on a large scale.",
+      practices: [
+        "Creating spiritual organizations or systems",
+        "Architectural design of sacred spaces",
+        "Large-scale healing work",
+        "Developing spiritual technologies",
+        "Manifesting visionary spiritual projects"
+      ]
     },
     33: {
-      purpose: "To uplift humanity through your compassionate teaching and unconditional love.",
-      practices: ["Heart-centered meditation", "Teaching with love", "Healing through presence", "Unconditional love as practice", "Spiritual nurturing of humanity"]
+      purpose: "To embody mastery of compassion and teach through spiritual service.",
+      practices: [
+        "Healing through presence",
+        "Unconditional love meditation",
+        "Teaching through example",
+        "Holding space for others' transformation",
+        "Heart-centered community building"
+      ]
     }
   };
   
   return {
-    number: pathSum,
-    purpose: spiritualPathMeanings[pathSum]?.purpose || "To discover and fulfill your unique spiritual purpose in this lifetime.",
-    practices: spiritualPathMeanings[pathSum]?.practices || ["Meditation", "Self-reflection", "Spiritual study", "Connecting with nature", "Service to others"]
+    number: spiritualPath,
+    purpose: spiritualPaths[spiritualPath]?.purpose || "To find your unique spiritual path through authentic experience.",
+    practices: spiritualPaths[spiritualPath]?.practices || [
+      "Daily meditation",
+      "Journaling",
+      "Connecting with nature",
+      "Energy awareness practices",
+      "Studying spiritual wisdom"
+    ]
   };
 };

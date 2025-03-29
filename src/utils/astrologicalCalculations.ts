@@ -1,698 +1,438 @@
 /**
- * Advanced astrological calculations based on birth date
- * Provides detailed zodiac information, planetary influences, and more
- */
-
-interface AstrologicalDetails {
-  sunSign: {
-    name: string;
-    symbol: string;
-    dateRange: string;
-    element: string;
-    quality: string; // Cardinal, Fixed, or Mutable
-    rulingPlanet: string;
-    luckyColors: string[];
-    luckyGemstones: string[];
-    luckyNumbers: number[];
-    strengths: string[];
-    weaknesses: string[];
-  };
-  moonSign?: {
-    name: string;
-    influence: string;
-  };
-  ascendantSign?: {
-    name: string;
-    influence: string;
-  };
-  elementInfluence: {
-    primaryElement: string;
-    elementDescription: string;
-    elementTraits: string[];
-  };
-  planetaryInfluence: {
-    dominantPlanet: string;
-    planetDescription: string;
-    planetaryTraits: string[];
-  };
-  luckyDay?: string;
-  luckyDirection?: string;
-  dailyMantra?: string;
-  pastLifeInfluences?: string[];
-  karmicLessons?: string[];
-  spiritualGifts?: string[];
-}
-
-/**
- * Calculate detailed astrological information based on birth date
- * @param birthDate User's birth date
- * @param birthTime Optional birth time for more accurate calculations
- * @param birthLocation Optional birth location for ascendant calculations
+ * Calculate astrological details based on birth date, time, and location
  */
 export const calculateAstrologicalDetails = (
-  birthDate: Date,
-  birthTime?: string,
+  birthDate: Date, 
+  birthTime?: string, 
   birthLocation?: string
-): AstrologicalDetails => {
-  const month = birthDate.getMonth() + 1; // JavaScript months are 0-indexed
-  const day = birthDate.getDate();
+) => {
+  // In a real implementation, this would use sophisticated astronomical calculations
+  // For now, we'll use simplified calculations based on the birth date
   
-  // Determine zodiac sign based on month and day
-  let sunSign = determineSunSign(month, day);
+  // Calculate sun sign
+  const sunSign = calculateSunSign(birthDate);
   
-  // Calculate moon sign if time is provided (simplified approximation)
-  let moonSign = undefined;
-  if (birthTime) {
-    moonSign = approximateMoonSign(birthDate, birthTime);
-  }
+  // Calculate moon sign (simplified version)
+  const moonSign = calculateMoonSign(birthDate, birthTime);
   
-  // Calculate ascendant sign if time and location are provided (simplified approximation)
-  let ascendantSign = undefined;
-  if (birthTime && birthLocation) {
-    ascendantSign = approximateAscendantSign(birthDate, birthTime, birthLocation);
-  }
-  
-  // Calculate element influence
-  const elementInfluence = calculateElementInfluence(sunSign.element);
+  // Calculate ascendant (simplified version)
+  const ascendant = calculateAscendant(birthDate, birthTime, birthLocation);
   
   // Calculate planetary influence
-  const planetaryInfluence = calculatePlanetaryInfluence(sunSign.rulingPlanet);
+  const planetaryInfluence = calculatePlanetaryInfluence(birthDate, birthTime, birthLocation);
   
-  // Calculate additional astrological details
-  const luckyDay = calculateLuckyDay(birthDate);
-  const luckyDirection = calculateLuckyDirection(sunSign.element);
+  // Calculate daily mantra
   const dailyMantra = generateDailyMantra(sunSign.name);
-  const pastLifeInfluences = generatePastLifeInfluences(sunSign.element, birthDate);
-  const karmicLessons = calculateKarmicLessons(birthDate);
-  const spiritualGifts = calculateSpiritualGifts(sunSign.element, sunSign.quality);
+  
+  // Generate past life influences
+  const pastLifeInfluences = generatePastLifeInfluences(sunSign.name, moonSign.name);
+  
+  // Generate karmic lessons
+  const karmicLessons = generateKarmicLessons(sunSign.name, ascendant.name);
   
   return {
     sunSign,
     moonSign,
-    ascendantSign,
-    elementInfluence,
+    ascendant,
     planetaryInfluence,
-    luckyDay,
-    luckyDirection,
     dailyMantra,
     pastLifeInfluences,
-    karmicLessons,
-    spiritualGifts
+    karmicLessons
   };
 };
 
-/**
- * Determine the sun sign (zodiac) based on month and day
- */
-const determineSunSign = (month: number, day: number) => {
-  // Aries (March 21 - April 19)
+// Helper functions
+const calculateSunSign = (birthDate: Date) => {
+  const month = birthDate.getMonth() + 1;
+  const day = birthDate.getDate();
+  
+  // Simplified sun sign calculation
   if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) {
     return {
-      name: "Aries",
-      symbol: "♈",
-      dateRange: "March 21 - April 19",
-      element: "Fire",
-      quality: "Cardinal",
-      rulingPlanet: "Mars",
-      luckyColors: ["Red", "Orange", "Yellow"],
-      luckyGemstones: ["Diamond", "Ruby", "Jasper"],
-      luckyNumbers: [1, 9, 27],
-      strengths: ["Courageous", "Determined", "Confident", "Enthusiastic", "Optimistic", "Honest", "Passionate"],
-      weaknesses: ["Impatient", "Moody", "Short-tempered", "Impulsive", "Aggressive"]
+      name: 'Aries',
+      symbol: '♈',
+      element: 'Fire',
+      quality: 'Cardinal',
+      rulingPlanet: 'Mars',
+      strengths: ['Courageous', 'Determined', 'Confident', 'Enthusiastic', 'Optimistic', 'Honest', 'Passionate'],
+      weaknesses: ['Impatient', 'Moody', 'Short-tempered', 'Impulsive', 'Aggressive'],
+      luckyColors: ['Red', 'White'],
+      luckyGemstones: ['Diamond', 'Ruby']
     };
-  }
-  // Taurus (April 20 - May 20)
-  else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
+  } else if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) {
     return {
-      name: "Taurus",
-      symbol: "♉",
-      dateRange: "April 20 - May 20",
-      element: "Earth",
-      quality: "Fixed",
-      rulingPlanet: "Venus",
-      luckyColors: ["Green", "Pink", "Blue"],
-      luckyGemstones: ["Emerald", "Rose Quartz", "Sapphire"],
-      luckyNumbers: [2, 6, 24],
-      strengths: ["Reliable", "Patient", "Practical", "Devoted", "Responsible", "Stable", "Grounded"],
-      weaknesses: ["Stubborn", "Possessive", "Uncompromising", "Materialistic", "Resistant to change"]
+      name: 'Taurus',
+      symbol: '♉',
+      element: 'Earth',
+      quality: 'Fixed',
+      rulingPlanet: 'Venus',
+      strengths: ['Reliable', 'Patient', 'Practical', 'Devoted', 'Responsible', 'Stable'],
+      weaknesses: ['Stubborn', 'Possessive', 'Uncompromising'],
+      luckyColors: ['Green', 'Pink'],
+      luckyGemstones: ['Emerald', 'Rose Quartz']
     };
-  }
-  // Gemini (May 21 - June 20)
-  else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
+  } else if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) {
     return {
-      name: "Gemini",
-      symbol: "♊",
-      dateRange: "May 21 - June 20",
-      element: "Air",
-      quality: "Mutable",
-      rulingPlanet: "Mercury",
-      luckyColors: ["Yellow", "Light Blue", "Silver"],
-      luckyGemstones: ["Agate", "Chrysoprase", "Citrine"],
-      luckyNumbers: [3, 5, 14],
-      strengths: ["Gentle", "Affectionate", "Curious", "Adaptable", "Quick-witted", "Versatile", "Communicative"],
-      weaknesses: ["Nervous", "Inconsistent", "Indecisive", "Superficial", "Scattered"]
+      name: 'Gemini',
+      symbol: '♊',
+      element: 'Air',
+      quality: 'Mutable',
+      rulingPlanet: 'Mercury',
+      strengths: ['Gentle', 'Affectionate', 'Curious', 'Adaptable', 'Ability to learn quickly and exchange ideas'],
+      weaknesses: ['Nervous', 'Inconsistent', 'Indecisive'],
+      luckyColors: ['Light-Green', 'Yellow'],
+      luckyGemstones: ['Agate']
     };
-  }
-  // Cancer (June 21 - July 22)
-  else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
+  } else if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) {
     return {
-      name: "Cancer",
-      symbol: "♋",
-      dateRange: "June 21 - July 22",
-      element: "Water",
-      quality: "Cardinal",
-      rulingPlanet: "Moon",
-      luckyColors: ["White", "Silver", "Light Blue"],
-      luckyGemstones: ["Pearl", "Moonstone", "Opal"],
-      luckyNumbers: [2, 7, 16],
-      strengths: ["Tenacious", "Highly Imaginative", "Loyal", "Emotional", "Sympathetic", "Nurturing", "Protective"],
-      weaknesses: ["Moody", "Pessimistic", "Suspicious", "Manipulative", "Insecure"]
+      name: 'Cancer',
+      symbol: '♋',
+      element: 'Water',
+      quality: 'Cardinal',
+      rulingPlanet: 'Moon',
+      strengths: ['Tenacious', 'Highly imaginative', 'Loyal', 'Emotional', 'Sympathetic', 'Persuasive'],
+      weaknesses: ['Moody', 'Pessimistic', 'Suspicious', 'Manipulative', 'Insecure'],
+      luckyColors: ['White'],
+      luckyGemstones: ['Pearl']
     };
-  }
-  // Leo (July 23 - August 22)
-  else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
+  } else if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) {
     return {
-      name: "Leo",
-      symbol: "♌",
-      dateRange: "July 23 - August 22",
-      element: "Fire",
-      quality: "Fixed",
-      rulingPlanet: "Sun",
-      luckyColors: ["Gold", "Orange", "Red"],
-      luckyGemstones: ["Ruby", "Amber", "Tiger's Eye"],
-      luckyNumbers: [1, 4, 19],
-      strengths: ["Creative", "Passionate", "Generous", "Warm-hearted", "Cheerful", "Humorous", "Loyal"],
-      weaknesses: ["Arrogant", "Stubborn", "Self-centered", "Inflexible", "Domineering"]
+      name: 'Leo',
+      symbol: '♌',
+      element: 'Fire',
+      quality: 'Fixed',
+      rulingPlanet: 'Sun',
+      strengths: ['Creative', 'Passionate', 'Generous', 'Warm-hearted', 'Cheerful', 'Humorous'],
+      weaknesses: ['Arrogant', 'Stubborn', 'Self-centered', 'Lazy', 'Inflexible'],
+      luckyColors: ['Gold'],
+      luckyGemstones: ['Ruby']
     };
-  }
-  // Virgo (August 23 - September 22)
-  else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
+  } else if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) {
     return {
-      name: "Virgo",
-      symbol: "♍",
-      dateRange: "August 23 - September 22",
-      element: "Earth",
-      quality: "Mutable",
-      rulingPlanet: "Mercury",
-      luckyColors: ["Green", "Brown", "Navy Blue"],
-      luckyGemstones: ["Peridot", "Jade", "Amazonite"],
-      luckyNumbers: [3, 6, 12],
-      strengths: ["Loyal", "Analytical", "Kind", "Hardworking", "Practical", "Detail-oriented", "Methodical"],
-      weaknesses: ["Overly Critical", "Perfectionist", "Shy", "Worrisome", "Overly Conservative"]
+      name: 'Virgo',
+      symbol: '♍',
+      element: 'Earth',
+      quality: 'Mutable',
+      rulingPlanet: 'Mercury',
+      strengths: ['Loyal', 'Analytical', 'Kind', 'Hardworking', 'Practical'],
+      weaknesses: ['Shyness', 'Worry', 'Overcritical of self and others', 'All work and no play'],
+      luckyColors: ['Grey', 'Beige'],
+      luckyGemstones: ['Sapphire']
     };
-  }
-  // Libra (September 23 - October 22)
-  else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
+  } else if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) {
     return {
-      name: "Libra",
-      symbol: "♎",
-      dateRange: "September 23 - October 22",
-      element: "Air",
-      quality: "Cardinal",
-      rulingPlanet: "Venus",
-      luckyColors: ["Pink", "Light Blue", "White"],
-      luckyGemstones: ["Sapphire", "Opal", "Rose Quartz"],
-      luckyNumbers: [4, 6, 15],
-      strengths: ["Diplomatic", "Fair-minded", "Social", "Cooperative", "Gracious", "Peace-loving", "Harmonious"],
-      weaknesses: ["Indecisive", "Avoids Confrontations", "Carries Grudges", "Self-pitying", "People-pleasing"]
+      name: 'Libra',
+      symbol: '♎',
+      element: 'Air',
+      quality: 'Cardinal',
+      rulingPlanet: 'Venus',
+      strengths: ['Cooperative', 'Diplomatic', 'Gracious', 'Fair-minded', 'Social'],
+      weaknesses: ['Indecisive', 'Avoids confrontations', 'Will carry a grudge', 'Self-pity'],
+      luckyColors: ['Pink', 'Green'],
+      luckyGemstones: ['Opal']
     };
-  }
-  // Scorpio (October 23 - November 21)
-  else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
+  } else if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) {
     return {
-      name: "Scorpio",
-      symbol: "♏",
-      dateRange: "October 23 - November 21",
-      element: "Water",
-      quality: "Fixed",
-      rulingPlanet: "Pluto, Mars",
-      luckyColors: ["Deep Red", "Maroon", "Black"],
-      luckyGemstones: ["Topaz", "Obsidian", "Garnet"],
-      luckyNumbers: [8, 11, 22],
-      strengths: ["Resourceful", "Passionate", "Intuitive", "Determined", "Magnetic", "Investigative", "Powerful"],
-      weaknesses: ["Jealous", "Secretive", "Resentful", "Manipulative", "Distrusting"]
+      name: 'Scorpio',
+      symbol: '♏',
+      element: 'Water',
+      quality: 'Fixed',
+      rulingPlanet: 'Pluto',
+      strengths: ['Resourceful', 'Brave', 'Passionate', 'Stubborn', 'A true friend'],
+      weaknesses: ['Distrusting', 'Jealous', 'Secretive', 'Violent'],
+      luckyColors: ['Scarlet'],
+      luckyGemstones: ['Topaz']
     };
-  }
-  // Sagittarius (November 22 - December 21)
-  else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
+  } else if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) {
     return {
-      name: "Sagittarius",
-      symbol: "♐",
-      dateRange: "November 22 - December 21",
-      element: "Fire",
-      quality: "Mutable",
-      rulingPlanet: "Jupiter",
-      luckyColors: ["Blue", "Purple", "Indigo"],
-      luckyGemstones: ["Turquoise", "Amethyst", "Sapphire"],
-      luckyNumbers: [3, 9, 21],
-      strengths: ["Generous", "Idealistic", "Philosophical", "Optimistic", "Enthusiastic", "Honest", "Adventurous"],
-      weaknesses: ["Restless", "Impatient", "Careless", "Tactless", "Over-confident"]
+      name: 'Sagittarius',
+      symbol: '♐',
+      element: 'Fire',
+      quality: 'Mutable',
+      rulingPlanet: 'Jupiter',
+      strengths: ['Generous', 'Idealistic', 'Great sense of humor'],
+      weaknesses: ['Promises more than can deliver', 'Very impatient', 'Will say anything no matter how undiplomatic'],
+      luckyColors: ['Blue'],
+      luckyGemstones: ['Turquoise']
     };
-  }
-  // Capricorn (December 22 - January 19)
-  else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
+  } else if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) {
     return {
-      name: "Capricorn",
-      symbol: "♑",
-      dateRange: "December 22 - January 19",
-      element: "Earth",
-      quality: "Cardinal",
-      rulingPlanet: "Saturn",
-      luckyColors: ["Brown", "Gray", "Dark Green"],
-      luckyGemstones: ["Garnet", "Onyx", "Lapis Lazuli"],
-      luckyNumbers: [4, 8, 17],
-      strengths: ["Responsible", "Disciplined", "Self-controlled", "Persistent", "Cautious", "Practical", "Ambitious"],
-      weaknesses: ["Pessimistic", "Stubborn", "Detached", "Workaholic", "Unforgiving"]
+      name: 'Capricorn',
+      symbol: '♑',
+      element: 'Earth',
+      quality: 'Cardinal',
+      rulingPlanet: 'Saturn',
+      strengths: ['Responsible', 'Disciplined', 'Self-control', 'Good managers'],
+      weaknesses: ['Know-it-all', 'Unforgiving', 'Condescending', 'Expecting the worst'],
+      luckyColors: ['Brown', 'Grey'],
+      luckyGemstones: ['Garnet']
     };
-  }
-  // Aquarius (January 20 - February 18)
-  else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
+  } else if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) {
     return {
-      name: "Aquarius",
-      symbol: "♒",
-      dateRange: "January 20 - February 18",
-      element: "Air",
-      quality: "Fixed",
-      rulingPlanet: "Uranus, Saturn",
-      luckyColors: ["Electric Blue", "Turquoise", "Silver"],
-      luckyGemstones: ["Amethyst", "Aquamarine", "Labradorite"],
-      luckyNumbers: [4, 7, 11],
-      strengths: ["Progressive", "Original", "Independent", "Humanitarian", "Inventive", "Logical", "Visionary"],
-      weaknesses: ["Emotionally Detached", "Stubborn", "Aloof", "Unpredictable", "Extremist"]
+      name: 'Aquarius',
+      symbol: '♒',
+      element: 'Air',
+      quality: 'Fixed',
+      rulingPlanet: 'Uranus',
+      strengths: ['Progressive', 'Original', 'Independent', 'Humanitarian'],
+      weaknesses: ['Runs from emotional expression', 'Temperamental', 'Uncompromising', 'Aloof'],
+      luckyColors: ['Blue'],
+      luckyGemstones: ['Amethyst']
     };
-  }
-  // Pisces (February 19 - March 20)
-  else {
+  } else {
+    // Default fallback
     return {
-      name: "Pisces",
-      symbol: "♓",
-      dateRange: "February 19 - March 20",
-      element: "Water",
-      quality: "Mutable",
-      rulingPlanet: "Neptune, Jupiter",
-      luckyColors: ["Sea Green", "Indigo", "Purple"],
-      luckyGemstones: ["Aquamarine", "Amethyst", "Moonstone"],
-      luckyNumbers: [3, 7, 12],
-      strengths: ["Compassionate", "Artistic", "Intuitive", "Gentle", "Wise", "Musical", "Empathetic"],
-      weaknesses: ["Escapist", "Idealistic", "Oversensitive", "Indecisive", "Easily Influenced"]
+      name: 'Pisces',
+      symbol: '♓',
+      element: 'Water',
+      quality: 'Mutable',
+      rulingPlanet: 'Neptune',
+      strengths: ['Compassionate', 'Artistic', 'Intuitive', 'Gentle', 'Wise', 'Musical'],
+      weaknesses: ['Fearful', 'Overly trusting', 'Sad', 'Desire to escape reality'],
+      luckyColors: ['Sea Green', 'Aqua'],
+      luckyGemstones: ['Aquamarine', 'Amethyst']
     };
   }
 };
 
-/**
- * Simplified approximation of moon sign based on birth date and time
- * Note: In a real application, this would use more accurate astronomical calculations
- */
-const approximateMoonSign = (birthDate: Date, birthTime: string): { name: string; influence: string } => {
-  // This is a simplified approximation - a real app would use ephemeris calculations
+const calculateMoonSign = (birthDate: Date, birthTime?: string) => {
+  // In a real implementation, this would require precise birth time and complex calculations
+  // For now, we'll return a simplified/random result
+  
   const moonSigns = [
-    {
-      name: "Aries Moon",
-      influence: "Emotional impulsivity, quick reactions, independent feelings"
-    },
-    {
-      name: "Taurus Moon",
-      influence: "Emotional stability, sensual nature, comfort-seeking"
-    },
-    {
-      name: "Gemini Moon",
-      influence: "Emotional adaptability, intellectual approach to feelings, communicative"
-    },
-    {
-      name: "Cancer Moon",
-      influence: "Deeply emotional, nurturing, protective, moody"
-    },
-    {
-      name: "Leo Moon",
-      influence: "Emotionally expressive, proud, dramatic, generous"
-    },
-    {
-      name: "Virgo Moon",
-      influence: "Emotionally analytical, perfectionist, practical approach to feelings"
-    },
-    {
-      name: "Libra Moon",
-      influence: "Emotionally balanced, partnership-oriented, diplomatic"
-    },
-    {
-      name: "Scorpio Moon",
-      influence: "Intense emotions, deeply passionate, private, resilient"
-    },
-    {
-      name: "Sagittarius Moon",
-      influence: "Emotionally optimistic, freedom-loving, philosophical"
-    },
-    {
-      name: "Capricorn Moon",
-      influence: "Emotionally reserved, disciplined feelings, responsible"
-    },
-    {
-      name: "Aquarius Moon",
-      influence: "Emotionally detached, humanitarian emotional responses"
-    },
-    {
-      name: "Pisces Moon", 
-      influence: "Emotionally sensitive, compassionate, intuitive, dreamy"
-    }
+    { name: 'Aries', qualities: ['Emotionally impulsive', 'Quick to react', 'Passionate'], element: 'Fire' },
+    { name: 'Taurus', qualities: ['Emotionally stable', 'Security-focused', 'Sensual'], element: 'Earth' },
+    { name: 'Gemini', qualities: ['Emotionally expressive', 'Adaptable', 'Curious'], element: 'Air' },
+    { name: 'Cancer', qualities: ['Deeply emotional', 'Nurturing', 'Memory-oriented'], element: 'Water' },
+    { name: 'Leo', qualities: ['Warm-hearted', 'Proud', 'Emotionally dramatic'], element: 'Fire' },
+    { name: 'Virgo', qualities: ['Analytically emotional', 'Detail-oriented', 'Service-minded'], element: 'Earth' },
+    { name: 'Libra', qualities: ['Harmonious emotions', 'Partnership-focused', 'Diplomatic'], element: 'Air' },
+    { name: 'Scorpio', qualities: ['Intense emotions', 'Transformative', 'Deep'], element: 'Water' },
+    { name: 'Sagittarius', qualities: ['Optimistic emotions', 'Freedom-loving', 'Philosophical'], element: 'Fire' },
+    { name: 'Capricorn', qualities: ['Reserved emotions', 'Responsible', 'Achievement-oriented'], element: 'Earth' },
+    { name: 'Aquarius', qualities: ['Intellectualized emotions', 'Humanitarian', 'Inventive'], element: 'Air' },
+    { name: 'Pisces', qualities: ['Compassionate emotions', 'Mystical', 'Artistic'], element: 'Water' }
   ];
   
-  // Use a deterministic but simplified way to select a moon sign based on birth details
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
-  const hour = parseInt(birthTime.split(':')[0]);
-  
-  // Simple hashing algorithm to select a moon sign
-  const moonSignIndex = (day + month + hour) % 12;
+  // Simplified moon sign calculation based on birth month
+  // In a real implementation, this would be much more complex
+  const moonSignIndex = birthDate.getMonth();
   return moonSigns[moonSignIndex];
 };
 
-/**
- * Simplified approximation of ascendant sign based on birth details
- * Note: In a real application, this would use more accurate astronomical calculations
- */
-const approximateAscendantSign = (
-  birthDate: Date, 
-  birthTime: string, 
-  birthLocation: string
-): { name: string; influence: string } => {
-  // This is a simplified approximation - a real app would use astronomical calculations
-  const ascendantSigns = [
-    {
-      name: "Aries Ascendant",
-      influence: "Direct approach to life, assertive demeanor, pioneering"
-    },
-    {
-      name: "Taurus Ascendant",
-      influence: "Steady approach to life, reliable appearance, practical"
-    },
-    {
-      name: "Gemini Ascendant",
-      influence: "Communicative demeanor, curious approach, youthful energy"
-    },
-    {
-      name: "Cancer Ascendant",
-      influence: "Nurturing presence, protective shell, emotional approach"
-    },
-    {
-      name: "Leo Ascendant",
-      influence: "Charismatic presence, confident demeanor, expressive"
-    },
-    {
-      name: "Virgo Ascendant",
-      influence: "Analytical approach, detail-oriented, service-focused"
-    },
-    {
-      name: "Libra Ascendant",
-      influence: "Diplomatic demeanor, beauty-focused, partnership-oriented"
-    },
-    {
-      name: "Scorpio Ascendant",
-      influence: "Mysterious presence, intense approach, transformative"
-    },
-    {
-      name: "Sagittarius Ascendant",
-      influence: "Optimistic demeanor, philosophical approach, freedom-loving"
-    },
-    {
-      name: "Capricorn Ascendant",
-      influence: "Reserved presence, ambitious approach, responsible"
-    },
-    {
-      name: "Aquarius Ascendant",
-      influence: "Unique demeanor, humanitarian approach, intellectual"
-    },
-    {
-      name: "Pisces Ascendant", 
-      influence: "Mystical presence, dreamy approach, compassionate"
-    }
+const calculateAscendant = (birthDate: Date, birthTime?: string, birthLocation?: string) => {
+  // In a real implementation, this would require precise birth time and location for complex calculations
+  // For now, we'll return a simplified/random result
+  
+  const ascendants = [
+    { name: 'Aries', traits: ['Bold appearance', 'Direct approach', 'Physical energy'], element: 'Fire' },
+    { name: 'Taurus', traits: ['Steady demeanor', 'Calm presence', 'Sensual appearance'], element: 'Earth' },
+    { name: 'Gemini', traits: ['Quick movements', 'Expressive face', 'Communicative presence'], element: 'Air' },
+    { name: 'Cancer', traits: ['Nurturing presence', 'Receptive demeanor', 'Protective nature'], element: 'Water' },
+    { name: 'Leo', traits: ['Dramatic entrance', 'Confident bearing', 'Regal presence'], element: 'Fire' },
+    { name: 'Virgo', traits: ['Precise movements', 'Analytical expression', 'Helpful demeanor'], element: 'Earth' },
+    { name: 'Libra', traits: ['Graceful appearance', 'Diplomatic approach', 'Charming presence'], element: 'Air' },
+    { name: 'Scorpio', traits: ['Magnetic presence', 'Penetrating gaze', 'Mysterious aura'], element: 'Water' },
+    { name: 'Sagittarius', traits: ['Enthusiastic approach', 'Open expression', 'Adventurous bearing'], element: 'Fire' },
+    { name: 'Capricorn', traits: ['Dignified appearance', 'Responsible demeanor', 'Reserved presence'], element: 'Earth' },
+    { name: 'Aquarius', traits: ['Unique style', 'Friendly detachment', 'Progressive attitude'], element: 'Air' },
+    { name: 'Pisces', traits: ['Gentle presence', 'Dreamy eyes', 'Compassionate demeanor'], element: 'Water' }
   ];
   
-  // Use a deterministic but simplified way to select an ascendant sign based on birth details
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
-  const hour = parseInt(birthTime.split(':')[0]);
-  const locationHash = birthLocation.length; // Very simplified location influence
+  // Without proper birth time and location, we'll provide a simplified result
+  // In a real application, we'd use astronomical calculations
+  let ascendantIndex = (birthDate.getDate() % 12);
   
-  // Simple hashing algorithm to select an ascendant sign
-  const ascendantSignIndex = (day + month + hour + locationHash) % 12;
-  return ascendantSigns[ascendantSignIndex];
-};
-
-/**
- * Calculate element influence based on zodiac element
- */
-const calculateElementInfluence = (element: string) => {
-  switch (element) {
-    case "Fire":
-      return {
-        primaryElement: "Fire",
-        elementDescription: "Dynamic, passionate, and energetic in nature",
-        elementTraits: ["Enthusiastic", "Action-oriented", "Impulsive", "Creative", "Inspiring"]
-      };
-    case "Earth":
-      return {
-        primaryElement: "Earth",
-        elementDescription: "Grounded, practical, and stabilizing in nature",
-        elementTraits: ["Reliable", "Pragmatic", "Patient", "Materialistic", "Secure"]
-      };
-    case "Air":
-      return {
-        primaryElement: "Air",
-        elementDescription: "Intellectual, communicative, and social in nature",
-        elementTraits: ["Analytical", "Communicative", "Social", "Conceptual", "Objective"]
-      };
-    case "Water":
-      return {
-        primaryElement: "Water",
-        elementDescription: "Emotional, intuitive, and deeply feeling in nature",
-        elementTraits: ["Empathetic", "Intuitive", "Emotional", "Nurturing", "Sensitive"]
-      };
-    default:
-      return {
-        primaryElement: "Balanced",
-        elementDescription: "Harmonious blend of elemental influences",
-        elementTraits: ["Adaptable", "Balanced", "Versatile", "Harmonious", "Moderate"]
-      };
+  // If birth time is provided, we can slightly improve accuracy
+  if (birthTime) {
+    const hour = parseInt(birthTime.split(':')[0]);
+    ascendantIndex = (ascendantIndex + hour) % 12;
   }
+  
+  return ascendants[ascendantIndex];
 };
 
-/**
- * Calculate planetary influence based on ruling planet
- */
-const calculatePlanetaryInfluence = (planet: string) => {
-  const planets: Record<string, { description: string; traits: string[] }> = {
-    "Sun": {
-      description: "The life force, vitality, and core identity",
-      traits: ["Confident", "Proud", "Creative", "Authoritative", "Generous"]
-    },
-    "Moon": {
-      description: "The emotional nature, instincts, and subconscious",
-      traits: ["Intuitive", "Nurturing", "Moody", "Protective", "Sensitive"]
-    },
-    "Mercury": {
-      description: "The mind, communication, and intellectual abilities",
-      traits: ["Intelligent", "Communicative", "Analytical", "Curious", "Adaptable"]
-    },
-    "Venus": {
-      description: "Love, beauty, pleasure, and attraction",
-      traits: ["Affectionate", "Artistic", "Diplomatic", "Sensual", "Charming"]
-    },
-    "Mars": {
-      description: "Energy, passion, drive, and determination",
-      traits: ["Assertive", "Courageous", "Energetic", "Competitive", "Bold"]
-    },
-    "Jupiter": {
-      description: "Expansion, growth, wisdom, and abundance",
-      traits: ["Optimistic", "Generous", "Philosophical", "Enthusiastic", "Lucky"]
-    },
-    "Saturn": {
-      description: "Discipline, responsibility, restrictions, and lessons",
-      traits: ["Disciplined", "Responsible", "Patient", "Ambitious", "Persistent"]
-    },
-    "Uranus": {
-      description: "Innovation, rebellion, originality, and change",
-      traits: ["Original", "Independent", "Inventive", "Progressive", "Unconventional"]
-    },
-    "Neptune": {
-      description: "Spirituality, dreams, illusions, and transcendence",
-      traits: ["Imaginative", "Spiritual", "Compassionate", "Dreamy", "Idealistic"]
-    },
-    "Pluto": {
-      description: "Transformation, power, regeneration, and rebirth",
-      traits: ["Transformative", "Intense", "Powerful", "Secretive", "Perceptive"]
-    }
+const calculatePlanetaryInfluence = (birthDate: Date, birthTime?: string, birthLocation?: string): { dominantPlanet: string; influence: string } => {
+  // In a real implementation, this would require precise birth time and location for complex calculations
+  // For now, we'll return a simplified result based on the Sun sign's ruling planet
+  const sunSign = calculateSunSign(birthDate);
+  
+  const planetaryInfluences: Record<string, { dominantPlanet: string; influence: string }> = {
+    'Aries': { dominantPlanet: 'Mars', influence: 'Energetic and assertive, driving you to take action and pursue your goals with passion.' },
+    'Taurus': { dominantPlanet: 'Venus', influence: 'Sensual and grounded, attracting beauty and abundance into your life.' },
+    'Gemini': { dominantPlanet: 'Mercury', influence: 'Communicative and adaptable, facilitating learning and connection with others.' },
+    'Cancer': { dominantPlanet: 'Moon', influence: 'Emotional and nurturing, guiding you to create a safe and comforting environment.' },
+    'Leo': { dominantPlanet: 'Sun', influence: 'Creative and confident, inspiring you to express your unique talents and lead with warmth.' },
+    'Virgo': { dominantPlanet: 'Mercury', influence: 'Analytical and detail-oriented, helping you to refine and perfect your skills.' },
+    'Libra': { dominantPlanet: 'Venus', influence: 'Harmonious and diplomatic, encouraging you to seek balance and create beauty in your relationships.' },
+    'Scorpio': { dominantPlanet: 'Pluto', influence: 'Transformative and intense, empowering you to delve deep and uncover hidden truths.' },
+    'Sagittarius': { dominantPlanet: 'Jupiter', influence: 'Optimistic and expansive, inspiring you to explore new horizons and seek wisdom.' },
+    'Capricorn': { dominantPlanet: 'Saturn', influence: 'Disciplined and responsible, guiding you to build lasting structures and achieve your goals.' },
+    'Aquarius': { dominantPlanet: 'Uranus', influence: 'Innovative and independent, encouraging you to break free from limitations and embrace change.' },
+    'Pisces': { dominantPlanet: 'Neptune', influence: 'Compassionate and intuitive, connecting you to the mystical realms and inspiring your creativity.' }
   };
   
-  // Handle compound planet influences (e.g., "Pluto, Mars")
-  const primaryPlanet = planet.split(',')[0].trim();
-  
-  if (planets[primaryPlanet]) {
-    return {
-      dominantPlanet: primaryPlanet,
-      planetDescription: planets[primaryPlanet].description,
-      planetaryTraits: planets[primaryPlanet].traits
-    };
-  } else {
-    return {
-      dominantPlanet: "Cosmic Forces",
-      planetDescription: "Multiple celestial influences at work",
-      planetaryTraits: ["Balanced", "Cosmic", "Multifaceted", "Universal", "Harmonious"]
-    };
-  }
+  return planetaryInfluences[sunSign.name] || { dominantPlanet: 'Cosmic Forces', influence: 'Multiple celestial influences work together in your chart, creating a unique cosmic signature.' };
 };
 
-/**
- * Calculate the lucky day based on birth date
- */
-const calculateLuckyDay = (birthDate: Date): string => {
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-  const birthDay = birthDate.getDate();
-  const birthMonth = birthDate.getMonth() + 1;
-  
-  // Simple algorithm to determine lucky day
-  const luckyDayIndex = (birthDay + birthMonth) % 7;
-  return days[luckyDayIndex];
-};
-
-/**
- * Calculate the lucky direction based on element
- */
-const calculateLuckyDirection = (element: string): string => {
-  const elementDirections: Record<string, string> = {
-    "Fire": "South",
-    "Earth": "North",
-    "Air": "East",
-    "Water": "West"
-  };
-  
-  return elementDirections[element] || "Northeast";
-};
-
-/**
- * Generate a daily mantra based on zodiac sign
- */
-const generateDailyMantra = (zodiacSign: string): string => {
-  const mantras: Record<string, string> = {
-    "Aries": "I am bold, courageous, and capable of achieving anything I set my mind to.",
-    "Taurus": "I embrace stability and find strength in my patience and determination.",
-    "Gemini": "I communicate with clarity and embrace the duality of my nature as a source of wisdom.",
-    "Cancer": "I nurture myself and others with compassion, creating a safe space for emotional growth.",
-    "Leo": "I shine my light brightly and inspire others with my authentic self-expression.",
-    "Virgo": "I perfect my craft with dedication and find joy in the details of life's journey.",
-    "Libra": "I create harmony within and around me, embracing balance in all aspects of life.",
-    "Scorpio": "I transform through life's challenges, emerging stronger and more powerful.",
-    "Sagittarius": "I seek truth and adventure, expanding my horizons with optimism and faith.",
-    "Capricorn": "I climb the mountains of life with discipline and achieve my ambitions step by step.",
-    "Aquarius": "I innovate and bring unique perspectives, creating positive change in the world.",
-    "Pisces": "I flow with the currents of life, trusting my intuition to guide me to my highest good."
-  };
-  
-  return mantras[zodiacSign] || "I am aligned with the cosmic energies that guide my highest purpose.";
-};
-
-/**
- * Generate past life influences based on element and birth date
- */
-const generatePastLifeInfluences = (element: string, birthDate: Date): string[] => {
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
-  
-  const elementInfluences: Record<string, string[]> = {
-    "Fire": [
-      "Warrior or military leader in ancient times",
-      "Spiritual leader or religious figure",
-      "Explorer or pioneer in uncharted territories",
-      "Revolutionary who fought for change"
+const generateDailyMantra = (sunSign: string): string => {
+  const mantras: Record<string, string[]> = {
+    'Aries': [
+      'I embrace my courage and forge my own path today',
+      'My passion fuels my purpose and ignites my spirit',
+      'I am a pioneer of new beginnings and fresh opportunities'
     ],
-    "Earth": [
-      "Farmer or agricultural specialist",
-      "Craftsperson or artisan",
-      "Merchant or trader of goods",
-      "Builder or architect of significant structures"
+    'Taurus': [
+      'I honor my worth and attract abundance into my life',
+      'I am grounded in stability and open to life's pleasures',
+      'My patience and persistence create lasting results'
     ],
-    "Air": [
-      "Scholar or academic in ancient learning centers",
-      "Diplomat or messenger between kingdoms",
-      "Writer or keeper of knowledge",
-      "Teacher or philosopher sharing wisdom"
+    'Gemini': [
+      'My curious mind opens doors to new perspectives today',
+      'I communicate with clarity and listen with understanding',
+      'I embrace the duality of my nature and find balance within'
     ],
-    "Water": [
-      "Healer or medicine practitioner",
-      "Mystic or intuitive guide",
-      "Artist or creative visionary",
-      "Sailor or navigator of seas"
+    'Cancer': [
+      'I nurture myself as I care for others',
+      'My intuition guides me to where I need to be',
+      'I honor my emotions as messengers of my inner wisdom'
+    ],
+    'Leo': [
+      'My inner light shines brightly, inspiring others',
+      'I create with joy and express myself authentically',
+      'I lead with an open heart and generous spirit'
+    ],
+    'Virgo': [
+      'I transform ordinary moments into sacred experiences',
+      'My attention to detail reveals the perfection in all things',
+      'I serve with purpose and grow through practical wisdom'
+    ],
+    'Libra': [
+      'I balance giving and receiving in all my relationships',
+      'I create harmony within and witness it manifest without',
+      'My decisions align with my highest values and create beauty'
+    ],
+    'Scorpio': [
+      'I transform challenges into opportunities for rebirth',
+      'I embrace my power and use it with compassion',
+      'My intensity fuels my passion and deepens my connections'
+    ],
+    'Sagittarius': [
+      'I expand my horizons and follow my vision with enthusiasm',
+      'My optimism creates adventures worth experiencing',
+      'I seek truth and wisdom in everyday experiences'
+    ],
+    'Capricorn': [
+      'I climb mountains with determination and patience',
+      'My discipline creates structures that support my growth',
+      'I honor both tradition and innovation in my journey'
+    ],
+    'Aquarius': [
+      'I bring innovation to everything I touch today',
+      'My unique perspective contributes to the collective good',
+      'I embrace my individuality while honoring my connection to all'
+    ],
+    'Pisces': [
+      'I flow with the currents of life, trusting divine timing',
+      'My compassion heals myself and others',
+      'I merge with the infinite while dancing in the finite'
     ]
   };
   
-  // Select two past life influences based on birth details
-  const availableInfluences = elementInfluences[element] || elementInfluences["Fire"];
-  const index1 = day % availableInfluences.length;
-  const index2 = month % availableInfluences.length;
-  
-  // Ensure we don't return duplicates
-  return index1 === index2 
-    ? [availableInfluences[index1], "Guide or mentor to others on their spiritual path"] 
-    : [availableInfluences[index1], availableInfluences[index2]];
-};
-
-/**
- * Calculate karmic lessons based on birth date
- */
-const calculateKarmicLessons = (birthDate: Date): string[] => {
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
-  const year = birthDate.getFullYear();
-  
-  const karmicLessonPool = [
-    "Learning to balance self-reliance with accepting help from others",
-    "Developing patience and persistence through life's challenges",
-    "Finding your authentic voice and expressing your truth",
-    "Healing ancestral patterns and generational wounds",
-    "Balancing material success with spiritual growth",
-    "Learning to set healthy boundaries in relationships",
-    "Developing compassion without sacrificing your needs",
-    "Embracing change as a catalyst for growth",
-    "Finding courage to pursue your true purpose",
-    "Learning to trust your intuition and inner guidance",
-    "Balancing giving and receiving in equal measure",
-    "Releasing fear-based thinking and embracing abundance"
+  const signMantras = mantras[sunSign] || [
+    'I am aligned with my highest purpose today',
+    'I trust the unfolding of my cosmic journey',
+    'My unique gifts serve the greater good'
   ];
   
-  // Select karmic lessons based on birth details
-  const index1 = day % karmicLessonPool.length;
-  const index2 = month % karmicLessonPool.length;
-  const index3 = (year % 100) % karmicLessonPool.length;
-  
-  // Remove duplicates
-  const uniqueIndices = [...new Set([index1, index2, index3])];
-  return uniqueIndices.map(index => karmicLessonPool[index]);
+  // Return a random mantra from the array
+  return signMantras[Math.floor(Math.random() * signMantras.length)];
 };
 
-/**
- * Calculate spiritual gifts based on element and quality
- */
-const calculateSpiritualGifts = (element: string, quality: string): string[] => {
-  const elementGifts: Record<string, string[]> = {
-    "Fire": ["Inspiration", "Courage", "Leadership", "Passion", "Intuitive insight"],
-    "Earth": ["Manifestation", "Healing touch", "Grounding presence", "Practical wisdom", "Abundance attraction"],
-    "Air": ["Clear communication", "Intellectual insights", "Visionary thinking", "Spiritual connection", "Mediumship"],
-    "Water": ["Emotional healing", "Intuitive dreams", "Psychic perception", "Empathic connection", "Soul recognition"]
-  };
-  
-  const qualityGifts: Record<string, string[]> = {
-    "Cardinal": ["Initiating spiritual paths", "Leadership in spiritual communities", "Opening new doors for others"],
-    "Fixed": ["Maintaining sacred traditions", "Deep spiritual devotion", "Holding space for transformation"],
-    "Mutable": ["Adapting to spiritual teachings", "Bridging different beliefs", "Spiritual versatility"]
-  };
-  
-  // Select gifts from both element and quality
-  const selectedElementGifts = elementGifts[element] || elementGifts["Fire"];
-  const selectedQualityGifts = qualityGifts[quality] || qualityGifts["Cardinal"];
-  
-  // Return 2 element gifts and 1 quality gift
-  return [
-    selectedElementGifts[0], 
-    selectedElementGifts[2], 
-    selectedQualityGifts[0]
+const generatePastLifeInfluences = (sunSign: string, moonSign: string): string[] => {
+  const generalInfluences = [
+    'Ancient knowledge of healing arts that manifests as intuitive health insights',
+    'Leadership role in a spiritual community that gives you natural teaching abilities',
+    'Artistic mastery from a creative lifetime that emerges in your current creative expressions',
+    'Deep connection to nature and elements from indigenous lifetime'
   ];
+  
+  const sunSignInfluences: Record<string, string> = {
+    'Aries': 'Warrior energy from past battles that now manifests as courage and initiative',
+    'Taurus': 'Connection to the land and agriculture that gives you patience and appreciation for beauty',
+    'Gemini': 'Role as messenger or scribe that enhances your communication abilities',
+    'Cancer': 'Tribal or family leadership that strengthens your nurturing instincts',
+    'Leo': 'Royal or noble position that gives you natural leadership qualities',
+    'Virgo': 'Healing or service role that enhances your attention to detail and helpfulness',
+    'Libra': 'Diplomatic or judicial position that strengthens your sense of fairness',
+    'Scorpio': 'Mystical initiation or transformation that deepens your emotional intensity',
+    'Sagittarius': 'Explorer or philosopher role that expands your search for meaning',
+    'Capricorn': 'Builder or architect position that enhances your discipline and structure',
+    'Aquarius': 'Revolutionary or inventor role that strengthens your innovative thinking',
+    'Pisces': 'Spiritual or artistic position that deepens your compassion and creativity'
+  };
+  
+  const moonSignInfluences: Record<string, string> = {
+    'Aries': 'Passionate emotional expression from a fiery past life experience',
+    'Taurus': 'Emotional security needs from times of material uncertainty',
+    'Gemini': 'Adaptable emotional nature from lives requiring mental flexibility',
+    'Cancer': 'Deep nurturing instincts from multiple maternal/paternal roles',
+    'Leo': 'Dramatic emotional expression from performance or leadership roles',
+    'Virgo': 'Analytical approach to feelings from lives of service and precision',
+    'Libra': 'Harmonious emotional needs from diplomatic or peace-making roles',
+    'Scorpio': 'Transformative emotional patterns from lives of intense experiences',
+    'Sagittarius': 'Optimistic emotional outlook from philosophical or teaching roles',
+    'Capricorn': 'Reserved emotional expression from lives requiring self-discipline',
+    'Aquarius': 'Detached emotional processing from lives of humanitarian service',
+    'Pisces': 'Compassionate emotional nature from spiritual or healing roles'
+  };
+  
+  const sunInfluence = sunSignInfluences[sunSign] || 'Past life experiences that align with your soul purpose and identity';
+  const moonInfluence = moonSignInfluences[moonSign] || 'Emotional patterns carried from previous incarnations that shape your instinctive responses';
+  
+  return [sunInfluence, moonInfluence, ...generalInfluences.slice(0, 2)];
+};
+
+const generateKarmicLessons = (sunSign: string, ascendantSign: string): string[] => {
+  const generalLessons = [
+    'Learning to balance spiritual knowledge with practical application',
+    'Developing patience with those who don't share your vision',
+    'Finding your voice and expressing your truth without fear',
+    'Letting go of perfectionism and embracing the beauty of imperfection'
+  ];
+  
+  const sunSignLessons: Record<string, string> = {
+    'Aries': 'Learning patience and considering others before taking action',
+    'Taurus': 'Releasing attachment to material possessions and finding security within',
+    'Gemini': 'Developing depth in knowledge rather than scattered information',
+    'Cancer': 'Setting healthy emotional boundaries and avoiding codependency',
+    'Leo': 'Balancing self-expression with genuine interest in others',
+    'Virgo': 'Releasing critical perfectionism and embracing natural flow',
+    'Libra': 'Making decisions independently without excessive external input',
+    'Scorpio': 'Transforming control issues into collaborative power',
+    'Sagittarius': 'Grounding philosophical ideas into practical wisdom',
+    'Capricorn': 'Finding joy and play amidst responsibility and work',
+    'Aquarius': 'Connecting intellectual ideals with emotional reality',
+    'Pisces': 'Establishing boundaries while maintaining compassion'
+  };
+  
+  const ascendantLessons: Record<string, string> = {
+    'Aries': 'Tempering impulsivity with thoughtful consideration',
+    'Taurus': 'Embracing necessary change despite comfort with stability',
+    'Gemini': 'Developing focus and follow-through on important projects',
+    'Cancer': 'Stepping into leadership without hiding behind protection',
+    'Leo': 'Sharing the spotlight and supporting others\' success',
+    'Virgo': 'Trusting intuition alongside analytical thinking',
+    'Libra': 'Standing firm in personal truth when conflict arises',
+    'Scorpio': 'Opening to vulnerability instead of maintaining protection',
+    'Sagittarius': 'Attending to important details rather than just the big picture',
+    'Capricorn': 'Allowing emotional expression alongside practical action',
+    'Aquarius': 'Creating intimate connections despite independence',
+    'Pisces': 'Establishing clear boundaries and practical structures'
+  };
+  
+  const sunLesson = sunSignLessons[sunSign] || 'Integrating your essential nature with higher purpose';
+  const ascendantLesson = ascendantLessons[ascendantSign] || 'Balancing your outward approach with inner wisdom';
+  
+  return [sunLesson, ascendantLesson, ...generalLessons.slice(0, 2)];
 };

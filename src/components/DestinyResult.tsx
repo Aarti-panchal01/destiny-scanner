@@ -134,7 +134,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
             </div>
             <div>
               <p className="text-cosmic-light-purple/80 mb-1">
-                <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence?.primaryElement}
+                <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence?.primaryElement || "Unknown"}
               </p>
               <p className="text-cosmic-light-purple/80 mb-1">
                 <strong className="text-cosmic-light-purple">Lucky Colors:</strong> {numerologyProfile.luckyColors.slice(0, 2).join(", ")}

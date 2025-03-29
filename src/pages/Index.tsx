@@ -1,10 +1,11 @@
+
 import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import PalmScanner from "@/components/PalmScanner";
 import DestinyResult from "@/components/DestinyResult";
 import { calculateDestinyNumber } from "@/utils/destinyCalculator";
 import { getZodiacSign } from "@/utils/zodiacCalculator";
-import { getEnhancedDestiny, analyzePalmImage } from "@/utils/apiService";
+import { getEnhancedDestiny, analyzePalmImage, EnhancedDestinyResponse } from "@/utils/apiService";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Scan, Stars, Calendar, Info } from "lucide-react";
@@ -65,7 +66,7 @@ const Index = () => {
     if (useEnhancedAPI) {
       setIsApiLoading(true);
       try {
-        const enhancedResult = await getEnhancedDestiny(birthDate, birthTime || undefined, birthLocation || undefined);
+        const enhancedResult: EnhancedDestinyResponse = await getEnhancedDestiny(birthDate, birthTime || undefined, birthLocation || undefined);
         
         setDestinyNumber(enhancedResult.destinyNumber);
         setAdditionalInsights(enhancedResult.insights);
