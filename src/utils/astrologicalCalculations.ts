@@ -284,7 +284,7 @@ const generateDailyMantra = (sunSign: string): string => {
     ],
     'Taurus': [
       'I honor my worth and attract abundance into my life',
-      'I am grounded in stability and open to life's pleasures',
+      'I am grounded in stability and open to life\'s pleasures',
       'My patience and persistence create lasting results'
     ],
     'Gemini': [
