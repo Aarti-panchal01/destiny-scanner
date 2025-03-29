@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Scan, Camera, Pause, Play, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,7 +23,6 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Clean up function to stop camera when component unmounts
   useEffect(() => {
     return () => {
       if (streamRef.current) {
@@ -95,7 +93,6 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
     setIsScanning(true);
     setProcessingPercentage(0);
 
-    // Animation for processing percentage
     const processingInterval = setInterval(() => {
       setProcessingPercentage(prev => {
         const newValue = prev + Math.random() * 15;
@@ -103,7 +100,6 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
       });
     }, 250);
 
-    // Draw current video frame to canvas
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d');
       if (ctx) {
@@ -116,12 +112,10 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
           videoRef.current.videoHeight
         );
 
-        // Get image data for API processing
         const imageData = canvasRef.current.toDataURL('image/jpeg');
         
         try {
-          // Use the API service for palm analysis
-          const analysisResult = await analyzePalmImage(imageData, useEnhancedAPI);
+          const analysisResult = await analyzePalmImage(imageData);
           
           clearInterval(processingInterval);
           setProcessingPercentage(100);
@@ -135,7 +129,6 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
               variant: "default",
             });
             
-            // Submit the destiny number and additional palm features if available
             onScanComplete(
               analysisResult.destinyNumber, 
               analysisResult.palmFeatures
@@ -199,7 +192,6 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
               </div>
             )}
             
-            {/* Target overlay when camera is active */}
             {isCameraActive && (
               <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
                 <div className="w-40 h-40 border-2 border-cosmic-gold/70 rounded-full flex items-center justify-center">

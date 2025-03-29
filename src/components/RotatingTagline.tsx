@@ -30,7 +30,7 @@ const RotatingTagline = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTaglineIndex((prevIndex) => (prevIndex + 1) % taglines.length);
-    }, 60000); // Change tagline every 1 minute (60000ms)
+    }, 15000); // Change tagline every 15 seconds (15000ms)
     
     return () => clearInterval(interval);
   }, []);
@@ -43,7 +43,7 @@ const RotatingTagline = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.5 }}
-        className="text-cosmic-light-purple/70 text-lg italic"
+        className="text-cosmic-light-purple/80 text-lg italic font-medium px-3 py-1 rounded-full bg-cosmic-purple/10 shadow-inner shadow-cosmic-purple/20 border border-cosmic-purple/20 backdrop-blur-sm"
       >
         {taglines[currentTaglineIndex]}
       </motion.p>
