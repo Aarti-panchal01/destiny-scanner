@@ -52,6 +52,13 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				cosmic: {
+					'dark': '#1A1F2C',
+					'purple': '#9b87f5',
+					'light-purple': '#D6BCFA',
+					'deep-purple': '#6E59A5',
+					'gold': '#FFD700',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -89,6 +96,10 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			backgroundImage: {
+				'cosmic-gradient': 'linear-gradient(to bottom right, #1A1F2C, #2D1B4E)',
+				'stars': 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)',
 			}
 		}
 	},
