@@ -32,29 +32,9 @@ export interface NumerologyProfile {
   lifeLessons: string[];
   luckyColors: string[];
   luckyGemstones: string[];
-  elementInfluence?: {
+  elementInfluence: {
     primaryElement: string;
     qualities: string[];
-  };
-  personalYear?: {
-    number: number;
-    meaning: string;
-    focus: string[];
-  };
-  personalMonth?: {
-    number: number;
-    meaning: string;
-    opportunities: string[];
-  };
-  nameAnalysis?: {
-    vibration: number;
-    qualities: string[];
-    influence: string;
-  };
-  spiritualPath?: {
-    number: number;
-    purpose: string;
-    practices: string[];
   };
 }
 
@@ -644,7 +624,7 @@ const determineLifeLessons = (bhagyank: number): string[] => {
     7: ["Inner wisdom", "Spiritual connection", "Analysis and understanding", "Faith and trust", "Sacred knowledge"],
     8: ["Abundance consciousness", "Ethical power", "Material mastery", "Achievement", "Balance of giving and receiving"],
     9: ["Universal compassion", "Selfless service", "Letting go", "Forgiveness", "Higher perspective"],
-    11: ["Spiritual awakening", "Inspired leadership", "Heightened intuition", "Illuminating others", "Idealism with practicality"],
+    11: ["Spiritual awakening", "Inspired leadership", "Heightened intuition", "Illuminated others", "Idealism with practicality"],
     22: ["Manifesting visions", "Master building", "Practical spirituality", "Large-scale service", "Material and spiritual integration"],
     33: ["Compassionate teaching", "Spiritual nurturing", "Selfless love", "Higher awareness", "Healing through presence"]
   };
@@ -966,165 +946,70 @@ export const analyzeNameNumerology = (name: string): { vibration: number; qualit
 /**
  * Calculate spiritual path based on birth date
  */
-export const calculateSpiritualPath = (birthDate: Date): { number: number; purpose: string; practices: string[] } => {
-  const day = birthDate.getDate();
-  const month = birthDate.getMonth() + 1;
-  const year = birthDate.getFullYear();
+export const calculateSpiritualPath = (birthDate: Date) => {
+  const birthDay = birthDate.getDate();
+  const birthMonth = birthDate.getMonth() + 1;
+  const birthYear = birthDate.getFullYear();
   
-  // Calculate spiritual path number (using life path calculation)
-  let sum = 0;
+  // Calculate a value that will determine the spiritual path
+  const pathNumber = ((birthDay + birthMonth + birthYear) % 9) || 9;
   
-  // Add day
-  sum += day;
-  
-  // Add month
-  sum += month;
-  
-  // Add year
-  sum += year.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
-  
-  // Reduce to a single digit, except for master numbers
-  let spiritualPath = sum;
-  while (spiritualPath > 9 && spiritualPath !== 11 && spiritualPath !== 22 && spiritualPath !== 33) {
-    let tempSum = 0;
-    spiritualPath.toString().split('').forEach(digit => {
-      tempSum += parseInt(digit);
-    });
-    spiritualPath = tempSum;
-  }
-  
-  const spiritualPaths: Record<number, { purpose: string; practices: string[] }> = {
+  const paths = {
     1: {
-      purpose: "To develop individuality and leadership while maintaining spiritual awareness.",
-      practices: [
-        "Daily self-affirmations",
-        "Solo meditation retreats",
-        "Leadership in spiritual communities",
-        "Innovative approaches to traditional practices",
-        "Setting intentions with each new moon"
-      ]
+      name: "The Pioneer's Path",
+      description: "Your spiritual journey is about independence, leadership, and creating new beginnings. You are here to initiate and inspire others through your courage and determination.",
+      lessons: ["Self-reliance", "Initiative", "Courage", "Innovation", "Authenticity"],
+      practices: ["Solo meditation", "Leadership roles in spiritual communities", "Pioneering new methods"]
     },
     2: {
-      purpose: "To develop spiritual partnerships and intuitive connection with others.",
-      practices: [
-        "Partner meditation",
-        "Energy healing exchanges",
-        "Moon rituals",
-        "Intuitive development exercises",
-        "Finding sacred balance in relationships"
-      ]
+      name: "The Diplomat's Path",
+      description: "Your spiritual journey involves harmony, partnership, and emotional sensitivity. You are here to bring people together and heal relationships through your intuitive understanding.",
+      lessons: ["Cooperation", "Patience", "Emotional intelligence", "Diplomacy", "Balance"],
+      practices: ["Partner meditation", "Energy healing", "Moon rituals", "Intuitive development exercises", "Finding sacred balance in relationships"]
     },
     3: {
-      purpose: "To express spiritual truths creatively and communicate divine inspiration.",
-      practices: [
-        "Mantras and chanting",
-        "Creative visualization",
-        "Expressive arts as spiritual practice",
-        "Teaching spiritual concepts",
-        "Joyful connection to divine through dance or music"
-      ]
+      name: "The Creator's Path",
+      description: "Your spiritual journey is about self-expression, joy, and creativity. You are here to bring beauty into the world and inspire others through your artistic and verbal expressions.",
+      lessons: ["Self-expression", "Joy", "Creativity", "Communication", "Optimism"],
+      practices: ["Creative visualization", "Sound healing", "Mantras", "Artistic spiritual practices"]
     },
     4: {
-      purpose: "To build solid spiritual foundations and practical application of wisdom.",
-      practices: [
-        "Consistent daily spiritual practice",
-        "Study of ancient texts and traditions",
-        "Creating sacred spaces",
-        "Grounding exercises in nature",
-        "Service to spiritual communities"
-      ]
+      name: "The Builder's Path",
+      description: "Your spiritual journey involves creating stability, order, and practical foundations. You are here to establish reliable systems and structures that support spiritual growth.",
+      lessons: ["Discipline", "Organization", "Reliability", "Practicality", "Persistence"],
+      practices: ["Structured meditation", "Ritual creation", "Building sacred spaces", "Earth-based spirituality"]
     },
     5: {
-      purpose: "To experience spiritual freedom and share the wisdom of change.",
-      practices: [
-        "Conscious breathing techniques",
-        "Travel to sacred sites",
-        "Trying diverse spiritual traditions",
-        "Freedom meditation",
-        "Teaching the wisdom of adaptation"
-      ]
+      name: "The Freedom Seeker's Path",
+      description: "Your spiritual journey is about versatility, change, and experience. You are here to embrace freedom and inspire others to break free from limitations through your adaptability.",
+      lessons: ["Adaptability", "Freedom", "Adventure", "Resourcefulness", "Detachment"],
+      practices: ["Travel as spiritual practice", "Varied spiritual exploration", "Breaking routines", "Sensory awareness"]
     },
     6: {
-      purpose: "To create harmony and nurture spiritual growth in self and others.",
-      practices: [
-        "Creating beauty as spiritual practice",
-        "Family or community rituals",
-        "Heart-centered meditation",
-        "Nurturing others on their spiritual path",
-        "Finding divine in domestic life"
-      ]
+      name: "The Nurturer's Path",
+      description: "Your spiritual journey involves love, responsibility, and service. You are here to care for others and create harmony through your compassionate nature.",
+      lessons: ["Compassion", "Responsibility", "Balance", "Harmony", "Unconditional love"],
+      practices: ["Service to others", "Family healing", "Heart-centered meditation", "Creating harmonious environments"]
     },
     7: {
-      purpose: "To seek spiritual knowledge and develop inner wisdom.",
-      practices: [
-        "Deep study of metaphysical subjects",
-        "Silent retreats",
-        "Analytical meditation",
-        "Developing psychic abilities",
-        "Connecting to spiritual guides"
-      ]
+      name: "The Mystic's Path",
+      description: "Your spiritual journey is about seeking wisdom, truth, and inner knowledge. You are here to analyze, research, and uncover spiritual mysteries through your analytical mind.",
+      lessons: ["Analysis", "Faith", "Wisdom", "Introspection", "Mysticism"],
+      practices: ["Contemplative meditation", "Sacred study", "Solitude", "Analytical spiritual techniques"]
     },
     8: {
-      purpose: "To master spiritual abundance and use power for the greater good.",
-      practices: [
-        "Prosperity rituals with spiritual focus",
-        "Energy management practices",
-        "Manifestation work",
-        "Conscious leadership",
-        "Balancing material and spiritual worlds"
-      ]
+      name: "The Empowered One's Path",
+      description: "Your spiritual journey involves mastering material and spiritual power. You are here to achieve and inspire others through your manifestation abilities and strength.",
+      lessons: ["Empowerment", "Manifestation", "Abundance", "Authority", "Integrity"],
+      practices: ["Manifestation techniques", "Power meditation", "Spiritual business", "Energetic boundary work"]
     },
     9: {
-      purpose: "To achieve spiritual completion and serve humanity with compassion.",
-      practices: [
-        "Universal love meditation",
-        "Humanitarian service",
-        "Forgiveness practices",
-        "Connecting with collective consciousness",
-        "Teaching spiritual wisdom"
-      ]
-    },
-    11: {
-      purpose: "To channel spiritual insights and inspire others through intuitive awareness.",
-      practices: [
-        "Channel writing or speaking",
-        "Light work",
-        "Teaching through inspiration",
-        "Dream journaling",
-        "Working with high-frequency energy"
-      ]
-    },
-    22: {
-      purpose: "To build structures that support spiritual evolution on a large scale.",
-      practices: [
-        "Creating spiritual organizations or systems",
-        "Architectural design of sacred spaces",
-        "Large-scale healing work",
-        "Developing spiritual technologies",
-        "Manifesting visionary spiritual projects"
-      ]
-    },
-    33: {
-      purpose: "To embody mastery of compassion and teach through spiritual service.",
-      practices: [
-        "Healing through presence",
-        "Unconditional love meditation",
-        "Teaching through example",
-        "Holding space for others' transformation",
-        "Heart-centered community building"
-      ]
+      name: "The Humanitarian's Path",
+      description: "Your spiritual journey is about completion, universal love, and service to humanity. You are here to transcend personal limitations and inspire global consciousness.",
+      lessons: ["Compassion", "Detachment", "Universal perspective", "Completion", "Forgiveness"],
+      practices: ["Global healing meditations", "Surrender practices", "Humanitarian service", "Completion rituals"]
     }
   };
   
-  return {
-    number: spiritualPath,
-    purpose: spiritualPaths[spiritualPath]?.purpose || "To find your unique spiritual path through authentic experience.",
-    practices: spiritualPaths[spiritualPath]?.practices || [
-      "Daily meditation",
-      "Journaling",
-      "Connecting with nature",
-      "Energy awareness practices",
-      "Studying spiritual wisdom"
-    ]
-  };
+  return paths[pathNumber as keyof typeof paths] || paths[1];
 };

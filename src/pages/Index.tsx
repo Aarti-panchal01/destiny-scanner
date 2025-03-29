@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import PalmScanner from "@/components/PalmScanner";
 import DestinyResult from "@/components/DestinyResult";
+import RotatingTagline from "@/components/RotatingTagline";
 import { calculateDestinyNumber } from "@/utils/destinyCalculator";
 import { getZodiacSign } from "@/utils/zodiacCalculator";
 import { getEnhancedDestiny, analyzePalmImage, EnhancedDestinyResponse } from "@/utils/apiService";
@@ -187,9 +188,10 @@ const Index = () => {
             <Stars className="h-10 w-10 text-cosmic-gold" />
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-cosmic-light-purple to-cosmic-gold bg-clip-text text-transparent mb-4">
-            Destiny Scanner
+            ASTROBAE
           </h1>
-          <p className="text-lg md:text-xl text-cosmic-light-purple/80 max-w-2xl mx-auto">
+          <RotatingTagline />
+          <p className="text-lg md:text-xl text-cosmic-light-purple/80 max-w-2xl mx-auto mt-4">
             Discover your life path and cosmic destiny through ancient numerology and astrology. 
             Enter your birth details or scan your palm to reveal what the universe has in store for you.
           </p>

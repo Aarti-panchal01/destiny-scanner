@@ -396,7 +396,7 @@ const generatePastLifeInfluences = (sunSign: string, moonSign: string): string[]
 const generateKarmicLessons = (sunSign: string, ascendantSign: string): string[] => {
   const generalLessons = [
     'Learning to balance spiritual knowledge with practical application',
-    'Developing patience with those who don't share your vision',
+    'Developing patience with those who don\'t share your vision',
     'Finding your voice and expressing your truth without fear',
     'Letting go of perfectionism and embracing the beauty of imperfection'
   ];
@@ -435,4 +435,22 @@ const generateKarmicLessons = (sunSign: string, ascendantSign: string): string[]
   const ascendantLesson = ascendantLessons[ascendantSign] || 'Balancing your outward approach with inner wisdom';
   
   return [sunLesson, ascendantLesson, ...generalLessons.slice(0, 2)];
+};
+
+const getSunSignSymbol = (sign: string): string => {
+  const symbols: Record<string, string> = {
+    "Aries": "♈",
+    "Taurus": "♉",
+    "Gemini": "♊",
+    "Cancer": "♋", 
+    "Leo": "♌",
+    "Virgo": "♍",
+    "Libra": "♎",
+    "Scorpio": "♏",
+    "Sagittarius": "♐",
+    "Capricorn": "♑",
+    "Aquarius": "♒",
+    "Pisces": "♓"
+  };
+  return symbols[sign] || "";
 };
