@@ -1,12 +1,14 @@
 
 import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
+import PalmScanner from "@/components/PalmScanner";
 import DestinyResult from "@/components/DestinyResult";
 import { calculateDestinyNumber } from "@/utils/destinyCalculator";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Scan, Stars } from "lucide-react";
+import { Scan, Stars, Calendar } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
@@ -35,6 +37,11 @@ const Index = () => {
     });
   };
 
+  const handlePalmScanComplete = (number: number) => {
+    setDestinyNumber(number);
+    setShowResult(true);
+  };
+
   return (
     <>
       <div className="stars-bg" />
@@ -53,7 +60,7 @@ const Index = () => {
           </h1>
           <p className="text-lg md:text-xl text-cosmic-light-purple/80 max-w-2xl mx-auto">
             Discover your life path and cosmic destiny through ancient numerology. 
-            Simply enter your birth date to reveal what the universe has in store for you.
+            Choose to enter your birth date or scan your palm to reveal what the universe has in store for you.
           </p>
         </motion.div>
 
@@ -63,15 +70,39 @@ const Index = () => {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="cosmic-card p-6 md:p-8 mb-10 max-w-xl mx-auto"
         >
-          <DateSelector date={birthDate} setDate={setBirthDate} />
-
-          <Button 
-            onClick={calculateDestiny}
-            className="cosmic-button w-full flex items-center justify-center"
-          >
-            <Scan className="mr-2 h-5 w-5" />
-            Reveal Your Destiny
-          </Button>
+          <Tabs defaultValue="date" className="mb-6">
+            <TabsList className="grid grid-cols-2 mb-6 bg-cosmic-dark/40 border border-cosmic-purple/20">
+              <TabsTrigger 
+                value="date"
+                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+              >
+                <Calendar className="mr-2 h-4 w-4" />
+                Birth Date
+              </TabsTrigger>
+              <TabsTrigger 
+                value="palm"
+                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+              >
+                <Scan className="mr-2 h-4 w-4" />
+                Palm Scan
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="date">
+              <DateSelector date={birthDate} setDate={setBirthDate} />
+              <Button 
+                onClick={calculateDestiny}
+                className="cosmic-button w-full flex items-center justify-center"
+              >
+                <Scan className="mr-2 h-5 w-5" />
+                Reveal Your Destiny
+              </Button>
+            </TabsContent>
+            
+            <TabsContent value="palm">
+              <PalmScanner onScanComplete={handlePalmScanComplete} />
+            </TabsContent>
+          </Tabs>
         </motion.div>
 
         {destinyNumber !== null && (
