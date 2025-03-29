@@ -33,7 +33,13 @@ export interface NumerologyProfile {
   luckyDays: string[];
   luckyMonths: string[];
   luckyGemstones: string[];
-  elementInfluence: string; // Adding this missing property
+  elementInfluence: string;
+  personalityOverview: string;
+  relationshipTraits: string[];
+  financialTraits: string[];
+  healthTraits: string[];
+  careerPaths: string[];
+  lifeLessons: string[];
 }
 
 export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
@@ -213,8 +219,18 @@ export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
     9: [2, 3, 6, 8],
   };
 
-  const mulank = mulankMeanings[mulankNumber] || { meaning: "Unknown", traits: [] };
-  const bhagyank = mulankMeanings[bhagyankNumber] || { meaning: "Unknown", traits: [] };
+  const mulank = {
+    number: mulankNumber,
+    meaning: mulankMeanings[mulankNumber]?.meaning || "Unknown",
+    traits: mulankMeanings[mulankNumber]?.traits || []
+  };
+
+  const bhagyank = {
+    number: bhagyankNumber,
+    meaning: mulankMeanings[bhagyankNumber]?.meaning || "Unknown",
+    traits: mulankMeanings[bhagyankNumber]?.traits || []
+  };
+
   const powerNumber = { number: powerNumberValue, meaning: vibrations[powerNumberValue] || "Unknown" };
   const rulingPlanet = rulingPlanets[mulankNumber] || { name: "Unknown", influence: "Unknown" };
   const vibration = vibrations[powerNumberValue] || "Unknown";
@@ -247,11 +263,16 @@ export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
     luckyDays: luckyDaysForNumber,
     luckyMonths: luckyMonthsForNumber,
     luckyGemstones: luckyGemstonesForNumber,
-    elementInfluence: getElementInfluence(mulank.number) // Adding this missing property
+    elementInfluence: getElementInfluence(mulank.number),
+    personalityOverview: "Unknown",
+    relationshipTraits: ["Unknown"],
+    financialTraits: ["Unknown"],
+    healthTraits: ["Unknown"],
+    careerPaths: ["Unknown"],
+    lifeLessons: ["Unknown"]
   };
 }
 
-// Helper function to get element influence based on number
 function getElementInfluence(number: number): string {
   const elements = {
     1: "Fire - passion, energy, and leadership",

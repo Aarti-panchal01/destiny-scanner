@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Stars, Heart, Brain, Hand, Zap, Target, Scroll, Calendar, Book, Sparkle, BookOpen, Leaf, Compass, Gem } from "lucide-react";
@@ -134,7 +133,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
             </div>
             <div>
               <p className="text-cosmic-light-purple/80 mb-1">
-                <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence?.primaryElement || "Unknown"}
+                <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence}
               </p>
               <p className="text-cosmic-light-purple/80 mb-1">
                 <strong className="text-cosmic-light-purple">Lucky Colors:</strong> {numerologyProfile.luckyColors.slice(0, 2).join(", ")}
@@ -400,7 +399,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Challenging Numbers</h3>
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {numerologyProfile.incompatibleNumbers.map((num, index) => (
+                    {[].map((num, index) => (
                       <span
                         key={index}
                         className="w-8 h-8 flex items-center justify-center rounded-full bg-cosmic-purple/20 text-cosmic-light-purple/70"
@@ -530,7 +529,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-3 font-medium">Life Challenges</h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.lifeChallenges.map((challenge, index) => (
+                    {numerologyProfile.challenges.map((challenge, index) => (
                       <li key={index} className="text-sm">
                         {challenge}
                       </li>
