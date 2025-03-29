@@ -1,3 +1,4 @@
+
 import { calculateDestinyNumber } from "./destinyCalculator";
 import { calculateNumerologyProfile, NumerologyProfile } from "./numerologyCalculator";
 import { calculateAstrologicalDetails } from "./astrologicalCalculations";
@@ -49,7 +50,7 @@ export const getEnhancedDestiny = async (
   };
 };
 
-interface PalmAnalysisResponse {
+export interface PalmAnalysisResponse {
   success: boolean;
   confidence?: number;
   error?: string;

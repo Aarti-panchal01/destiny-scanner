@@ -1,3 +1,4 @@
+
 import React from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Stars, Heart, Brain, Hand, Zap, Target, Scroll, Calendar, Book, Sparkle, BookOpen, Leaf, Compass, Gem } from "lucide-react";
@@ -59,15 +60,15 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
   destinyNumber,
   isVisible,
   palmFeatures,
-  additionalInsights,
-  compatibleNumbers,
+  additionalInsights = [],
+  compatibleNumbers = [],
   numerologyProfile,
-  specialTraits,
-  palmInsights,
+  specialTraits = [],
+  palmInsights = [],
   dailyForecast,
-  luckyDates,
-  pastLifeInfluences,
-  karmicLessons,
+  luckyDates = [],
+  pastLifeInfluences = [],
+  karmicLessons = [],
   personalYear,
   personalMonth,
   nameAnalysis,
@@ -136,13 +137,13 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence}
               </p>
               <p className="text-cosmic-light-purple/80 mb-1">
-                <strong className="text-cosmic-light-purple">Lucky Colors:</strong> {numerologyProfile.luckyColors.slice(0, 2).join(", ")}
+                <strong className="text-cosmic-light-purple">Lucky Colors:</strong> {(numerologyProfile.luckyColors || []).slice(0, 2).join(", ")}
               </p>
               <p className="text-cosmic-light-purple/80 mb-1">
-                <strong className="text-cosmic-light-purple">Lucky Gemstones:</strong> {numerologyProfile.luckyGemstones.slice(0, 2).join(", ")}
+                <strong className="text-cosmic-light-purple">Lucky Gemstones:</strong> {(numerologyProfile.luckyGemstones || []).slice(0, 2).join(", ")}
               </p>
               <p className="text-cosmic-light-purple/80">
-                <strong className="text-cosmic-light-purple">Compatible Numbers:</strong> {numerologyProfile.compatibleNumbers.join(", ")}
+                <strong className="text-cosmic-light-purple">Compatible Numbers:</strong> {(numerologyProfile.compatibleNumbers || []).join(", ")}
               </p>
             </div>
           </div>
@@ -272,7 +273,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                     <div>
                       <p className="text-cosmic-light-purple/90 text-sm font-medium mb-1">Focus Areas:</p>
                       <div className="flex flex-wrap gap-1">
-                        {personalYear.focus.map((focus: string, i: number) => (
+                        {personalYear.focus && personalYear.focus.map((focus, i) => (
                           <span key={i} className="text-xs bg-cosmic-purple/20 px-2 py-1 rounded-full">
                             {focus}
                           </span>
@@ -289,7 +290,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                     <div>
                       <p className="text-cosmic-light-purple/90 text-sm font-medium mb-1">Opportunities:</p>
                       <div className="flex flex-wrap gap-1">
-                        {personalMonth.opportunities.map((opportunity: string, i: number) => (
+                        {personalMonth.opportunities && personalMonth.opportunities.map((opportunity, i) => (
                           <span key={i} className="text-xs bg-cosmic-purple/20 px-2 py-1 rounded-full">
                             {opportunity}
                           </span>
@@ -338,7 +339,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                   {numerologyProfile.mulank.meaning}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {numerologyProfile.mulank.traits.map((trait, index) => (
+                  {numerologyProfile.mulank.traits && numerologyProfile.mulank.traits.map((trait, index) => (
                     <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                       {trait}
                     </span>
@@ -354,7 +355,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                   {numerologyProfile.bhagyank.meaning}
                 </p>
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {numerologyProfile.bhagyank.traits.map((trait, index) => (
+                  {numerologyProfile.bhagyank.traits && numerologyProfile.bhagyank.traits.map((trait, index) => (
                     <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                       {trait}
                     </span>
@@ -382,7 +383,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Compatible Numbers</h3>
                   <div className="flex flex-wrap gap-2 mb-2">
-                    {numerologyProfile.compatibleNumbers.map((num, index) => (
+                    {(numerologyProfile.compatibleNumbers || []).map((num, index) => (
                       <span
                         key={index}
                         className="w-8 h-8 flex items-center justify-center rounded-full bg-cosmic-purple/40 text-cosmic-light-purple"
@@ -399,6 +400,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Challenging Numbers</h3>
                   <div className="flex flex-wrap gap-2 mb-2">
+                    {/* Using an empty array as a fallback since we don't have this property */}
                     {[].map((num, index) => (
                       <span
                         key={index}
@@ -426,7 +428,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                   <div>
                     <h4 className="text-cosmic-light-purple font-medium mb-2">Name Qualities:</h4>
                     <div className="flex flex-wrap gap-2">
-                      {nameAnalysis.qualities.map((quality: string, index: number) => (
+                      {nameAnalysis.qualities && nameAnalysis.qualities.map((quality, index) => (
                         <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                           {quality}
                         </span>
@@ -440,7 +442,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-2 font-medium">Lucky Colors</h3>
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {numerologyProfile.luckyColors.map((color, index) => (
+                    {(numerologyProfile.luckyColors || []).map((color, index) => (
                       <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                         {color}
                       </span>
@@ -451,7 +453,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-2 font-medium">Lucky Gemstones</h3>
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {numerologyProfile.luckyGemstones.map((stone, index) => (
+                    {(numerologyProfile.luckyGemstones || []).map((stone, index) => (
                       <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                         {stone}
                       </span>
@@ -469,7 +471,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
               <div>
                 <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Personality Overview</h3>
                 <p className="text-cosmic-light-purple/90 leading-relaxed">
-                  {numerologyProfile.personalityOverview}
+                  {numerologyProfile.personalityOverview || "Your numerological profile reveals a unique blend of energies that shape your personality and life path."}
                 </p>
               </div>
               
@@ -479,7 +481,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                     <Heart className="mr-2 h-5 w-5" /> Relationship Traits
                   </h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.relationshipTraits.map((trait, index) => (
+                    {(numerologyProfile.relationshipTraits || ["Compassionate", "Understanding", "Supportive"]).map((trait, index) => (
                       <li key={index} className="text-sm">
                         {trait}
                       </li>
@@ -492,7 +494,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                     <Gem className="mr-2 h-5 w-5" /> Financial Traits
                   </h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.financialTraits.map((trait, index) => (
+                    {(numerologyProfile.financialTraits || ["Practical", "Resourceful", "Strategic"]).map((trait, index) => (
                       <li key={index} className="text-sm">
                         {trait}
                       </li>
@@ -505,7 +507,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-3 font-medium">Health Traits</h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.healthTraits.map((trait, index) => (
+                    {(numerologyProfile.healthTraits || ["Resilient", "Balanced", "Energetic"]).map((trait, index) => (
                       <li key={index} className="text-sm">
                         {trait}
                       </li>
@@ -516,7 +518,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-3 font-medium">Career Paths</h3>
                   <div className="flex flex-wrap gap-2">
-                    {numerologyProfile.careerPaths.map((career, index) => (
+                    {(numerologyProfile.careerPaths || numerologyProfile.careerSuggestions || []).map((career, index) => (
                       <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                         {career}
                       </span>
@@ -529,7 +531,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-3 font-medium">Life Challenges</h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.challenges.map((challenge, index) => (
+                    {(numerologyProfile.challenges || []).map((challenge, index) => (
                       <li key={index} className="text-sm">
                         {challenge}
                       </li>
@@ -540,7 +542,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h3 className="text-cosmic-gold mb-3 font-medium">Life Lessons</h3>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {numerologyProfile.lifeLessons.map((lesson, index) => (
+                    {(numerologyProfile.lifeLessons || numerologyProfile.spiritualLessons || []).map((lesson, index) => (
                       <li key={index} className="text-sm">
                         {lesson}
                       </li>
@@ -559,21 +561,21 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                     <div>
                       <h4 className="text-cosmic-light-purple font-medium mb-2">Major Lines:</h4>
                       <ul className="space-y-2 text-cosmic-light-purple/90">
-                        {palmFeatures.lifeLineLength && (
+                        {palmFeatures.lifeLineLength !== undefined && (
                           <li className="text-sm">
                             <strong>Life Line:</strong> {palmFeatures.lifeLineLength > 0.7 
                               ? "Long, indicating vitality and resilience" 
                               : "Moderate, showing practical energy management"}
                           </li>
                         )}
-                        {palmFeatures.heartLineStrength && (
+                        {palmFeatures.heartLineStrength !== undefined && (
                           <li className="text-sm">
                             <strong>Heart Line:</strong> {palmFeatures.heartLineStrength > 0.6 
                               ? "Strong, showing deep emotional capacity" 
                               : "Balanced, indicating emotional stability"}
                           </li>
                         )}
-                        {palmFeatures.headLineDepth && (
+                        {palmFeatures.headLineDepth !== undefined && (
                           <li className="text-sm">
                             <strong>Head Line:</strong> {palmFeatures.headLineDepth > 0.6 
                               ? "Deep, showing analytical thinking" 
@@ -692,7 +694,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
                 <div>
                   <h4 className="text-cosmic-light-purple font-medium mb-2">Spiritual Practices That Support Your Path:</h4>
                   <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
-                    {spiritualPath.practices.map((practice: string, index: number) => (
+                    {spiritualPath.practices && spiritualPath.practices.map((practice, index) => (
                       <li key={index} className="text-sm">
                         {practice}
                       </li>

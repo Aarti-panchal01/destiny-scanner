@@ -94,7 +94,7 @@ export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
     4: ["Management", "Engineering", "Finance"],
     5: ["Travel", "Marketing", "Technology"],
     6: ["Healthcare", "Education", "Social work"],
-    7: ["Research", "Philosophy", "Spirituality"],
+    7: ["Research", "Philosophy", "Spiritual leadership"],
     8: ["Business", "Politics", "Real estate"],
     9: ["Humanitarian work", "Teaching", "Activism"],
   };
@@ -246,6 +246,35 @@ export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
   const luckyMonthsForNumber = luckyMonths[powerNumberValue] || [];
   const luckyGemstonesForNumber = luckyGemstones[powerNumberValue] || [];
 
+  const personalityOverviewText = "Your numerological destiny number " + bhagyankNumber + " suggests that you have a unique blend of " +
+    mulankMeanings[mulankNumber]?.traits.join(", ").toLowerCase() + " qualities that shape your approach to life. You naturally gravitate towards " +
+    positivePathsForNumber.join(", ").toLowerCase() + " while being mindful of tendencies toward " + 
+    challengesForNumber.join(", ").toLowerCase() + ".";
+
+  const relationshipTraitsArray = [
+    "Values " + (mulankNumber % 2 === 0 ? "harmony and emotional connection" : "honesty and independence"),
+    "Communicates with " + (bhagyankNumber % 2 === 0 ? "sensitivity and empathy" : "directness and clarity"),
+    "Seeks " + (powerNumberValue < 5 ? "depth and lasting connection" : "excitement and spontaneity")
+  ];
+
+  const financialTraitsArray = [
+    "Approach to money: " + (mulankNumber % 2 === 0 ? "cautious and saving-oriented" : "dynamic and opportunity-focused"),
+    "Financial strength: " + (bhagyankNumber < 5 ? "planning and structure" : "adaptability and resourcefulness"),
+    financialInfluence
+  ];
+
+  const healthTraitsArray = [
+    "Physical energy: " + (mulankNumber < 5 ? "steady and enduring" : "dynamic and variable"),
+    "Mental approach: " + (bhagyankNumber % 2 === 0 ? "balanced and contemplative" : "energetic and action-oriented"),
+    healthConsideration
+  ];
+
+  const lifeLessonsArray = spiritualLessonsForNumber.length > 0
+    ? spiritualLessonsForNumber
+    : ["Balancing material and spiritual aspects of life", 
+       "Finding inner harmony through acceptance", 
+       "Developing wisdom through life experiences"];
+
   return {
     mulank,
     bhagyank,
@@ -264,12 +293,12 @@ export function calculateNumerologyProfile(birthDate: Date): NumerologyProfile {
     luckyMonths: luckyMonthsForNumber,
     luckyGemstones: luckyGemstonesForNumber,
     elementInfluence: getElementInfluence(mulank.number),
-    personalityOverview: "Unknown",
-    relationshipTraits: ["Unknown"],
-    financialTraits: ["Unknown"],
-    healthTraits: ["Unknown"],
-    careerPaths: ["Unknown"],
-    lifeLessons: ["Unknown"]
+    personalityOverview: personalityOverviewText,
+    relationshipTraits: relationshipTraitsArray,
+    financialTraits: financialTraitsArray,
+    healthTraits: healthTraitsArray,
+    careerPaths: careerSuggestionsForNumber,
+    lifeLessons: lifeLessonsArray
   };
 }
 
