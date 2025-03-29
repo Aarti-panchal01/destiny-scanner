@@ -1,10 +1,13 @@
-
-import React from "react";
+import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Stars, Heart, Brain, Hand, Zap, Target, Scroll, Calendar, Book, Sparkle, BookOpen, Leaf, Compass, Gem } from "lucide-react";
+import { Sparkles, Stars, Heart, Brain, Hand, Zap, Target, Scroll, Calendar, Book, Sparkle, BookOpen, Leaf, Compass, Gem, Download } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getDestinyMeaning, getDestinyTraits } from "@/utils/destinyCalculator";
 import { NumerologyProfile } from "@/utils/numerologyCalculator";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface PalmFeatures {
   lifeLineLength?: number;
@@ -74,7 +77,53 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
   nameAnalysis,
   spiritualPath
 }) => {
+  const resultRef = useRef<HTMLDivElement>(null);
+  
   if (!isVisible) return null;
+  
+  const downloadAsPDF = async () => {
+    if (!resultRef.current) return;
+    
+    toast({
+      title: "Preparing PDF",
+      description: "Your destiny report is being prepared for download...",
+    });
+    
+    try {
+      const element = resultRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        logging: false,
+        useCORS: true,
+        backgroundColor: "#0f0f23" // Match cosmic dark background
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+      
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`Destiny-Report-Number-${destinyNumber}.pdf`);
+      
+      toast({
+        title: "Download Complete!",
+        description: "Your destiny report has been saved as a PDF.",
+      });
+    } catch (error) {
+      console.error("PDF generation error:", error);
+      toast({
+        title: "Download Failed",
+        description: "There was an error generating your PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -82,6 +131,7 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="cosmic-card p-6 md:p-8 mb-10"
+      ref={resultRef}
     >
       <div className="text-center mb-8">
         <div className="flex justify-center mb-3">
@@ -104,6 +154,15 @@ const DestinyResult: React.FC<DestinyResultProps> = ({
         <p className="text-cosmic-light-purple/70 max-w-2xl mx-auto">
           This sacred number reveals your life purpose and spiritual path. It is calculated from your birth date and represents the energies that guide your soul's journey.
         </p>
+        
+        <Button 
+          variant="outline" 
+          onClick={downloadAsPDF}
+          className="mt-4 border-cosmic-purple/40 text-cosmic-light-purple hover:bg-cosmic-purple/20"
+        >
+          <Download className="h-4 w-4 mr-2" />
+          Download Destiny Report
+        </Button>
       </div>
 
       {/* Summary Card */}

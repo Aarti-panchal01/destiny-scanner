@@ -20,7 +20,8 @@ export const getEnhancedDestiny = async (
   birthTime?: string,
   birthLocation?: string
 ): Promise<EnhancedDestinyResponse> => {
-  await new Promise(resolve => setTimeout(resolve, 1500));
+  // Reduce timeout from 1500ms to 500ms (15 seconds is actually 15000ms, but we'll make it even faster)
+  await new Promise(resolve => setTimeout(resolve, 500));
 
   const destinyNumber = calculateDestinyNumber(birthDate);
   
@@ -72,7 +73,8 @@ export interface PalmAnalysisResponse {
 }
 
 export const analyzePalmImage = async (imageData: string): Promise<PalmAnalysisResponse> => {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Reduce timeout from 1000ms to 500ms
+  await new Promise(resolve => setTimeout(resolve, 500));
 
   return {
     success: true,
