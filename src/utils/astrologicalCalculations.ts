@@ -1,4 +1,3 @@
-
 /**
  * Advanced astrological calculations based on birth date
  * Provides detailed zodiac information, planetary influences, and more
@@ -36,6 +35,12 @@ interface AstrologicalDetails {
     planetDescription: string;
     planetaryTraits: string[];
   };
+  luckyDay?: string;
+  luckyDirection?: string;
+  dailyMantra?: string;
+  pastLifeInfluences?: string[];
+  karmicLessons?: string[];
+  spiritualGifts?: string[];
 }
 
 /**
@@ -73,12 +78,26 @@ export const calculateAstrologicalDetails = (
   // Calculate planetary influence
   const planetaryInfluence = calculatePlanetaryInfluence(sunSign.rulingPlanet);
   
+  // Calculate additional astrological details
+  const luckyDay = calculateLuckyDay(birthDate);
+  const luckyDirection = calculateLuckyDirection(sunSign.element);
+  const dailyMantra = generateDailyMantra(sunSign.name);
+  const pastLifeInfluences = generatePastLifeInfluences(sunSign.element, birthDate);
+  const karmicLessons = calculateKarmicLessons(birthDate);
+  const spiritualGifts = calculateSpiritualGifts(sunSign.element, sunSign.quality);
+  
   return {
     sunSign,
     moonSign,
     ascendantSign,
     elementInfluence,
-    planetaryInfluence
+    planetaryInfluence,
+    luckyDay,
+    luckyDirection,
+    dailyMantra,
+    pastLifeInfluences,
+    karmicLessons,
+    spiritualGifts
   };
 };
 
@@ -329,7 +348,7 @@ const approximateMoonSign = (birthDate: Date, birthTime: string): { name: string
     },
     {
       name: "Aquarius Moon",
-      influence: "Emotionally detached, humanitarian, innovative emotional responses"
+      influence: "Emotionally detached, humanitarian emotional responses"
     },
     {
       name: "Pisces Moon", 
@@ -522,3 +541,158 @@ const calculatePlanetaryInfluence = (planet: string) => {
   }
 };
 
+/**
+ * Calculate the lucky day based on birth date
+ */
+const calculateLuckyDay = (birthDate: Date): string => {
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const birthDay = birthDate.getDate();
+  const birthMonth = birthDate.getMonth() + 1;
+  
+  // Simple algorithm to determine lucky day
+  const luckyDayIndex = (birthDay + birthMonth) % 7;
+  return days[luckyDayIndex];
+};
+
+/**
+ * Calculate the lucky direction based on element
+ */
+const calculateLuckyDirection = (element: string): string => {
+  const elementDirections: Record<string, string> = {
+    "Fire": "South",
+    "Earth": "North",
+    "Air": "East",
+    "Water": "West"
+  };
+  
+  return elementDirections[element] || "Northeast";
+};
+
+/**
+ * Generate a daily mantra based on zodiac sign
+ */
+const generateDailyMantra = (zodiacSign: string): string => {
+  const mantras: Record<string, string> = {
+    "Aries": "I am bold, courageous, and capable of achieving anything I set my mind to.",
+    "Taurus": "I embrace stability and find strength in my patience and determination.",
+    "Gemini": "I communicate with clarity and embrace the duality of my nature as a source of wisdom.",
+    "Cancer": "I nurture myself and others with compassion, creating a safe space for emotional growth.",
+    "Leo": "I shine my light brightly and inspire others with my authentic self-expression.",
+    "Virgo": "I perfect my craft with dedication and find joy in the details of life's journey.",
+    "Libra": "I create harmony within and around me, embracing balance in all aspects of life.",
+    "Scorpio": "I transform through life's challenges, emerging stronger and more powerful.",
+    "Sagittarius": "I seek truth and adventure, expanding my horizons with optimism and faith.",
+    "Capricorn": "I climb the mountains of life with discipline and achieve my ambitions step by step.",
+    "Aquarius": "I innovate and bring unique perspectives, creating positive change in the world.",
+    "Pisces": "I flow with the currents of life, trusting my intuition to guide me to my highest good."
+  };
+  
+  return mantras[zodiacSign] || "I am aligned with the cosmic energies that guide my highest purpose.";
+};
+
+/**
+ * Generate past life influences based on element and birth date
+ */
+const generatePastLifeInfluences = (element: string, birthDate: Date): string[] => {
+  const day = birthDate.getDate();
+  const month = birthDate.getMonth() + 1;
+  
+  const elementInfluences: Record<string, string[]> = {
+    "Fire": [
+      "Warrior or military leader in ancient times",
+      "Spiritual leader or religious figure",
+      "Explorer or pioneer in uncharted territories",
+      "Revolutionary who fought for change"
+    ],
+    "Earth": [
+      "Farmer or agricultural specialist",
+      "Craftsperson or artisan",
+      "Merchant or trader of goods",
+      "Builder or architect of significant structures"
+    ],
+    "Air": [
+      "Scholar or academic in ancient learning centers",
+      "Diplomat or messenger between kingdoms",
+      "Writer or keeper of knowledge",
+      "Teacher or philosopher sharing wisdom"
+    ],
+    "Water": [
+      "Healer or medicine practitioner",
+      "Mystic or intuitive guide",
+      "Artist or creative visionary",
+      "Sailor or navigator of seas"
+    ]
+  };
+  
+  // Select two past life influences based on birth details
+  const availableInfluences = elementInfluences[element] || elementInfluences["Fire"];
+  const index1 = day % availableInfluences.length;
+  const index2 = month % availableInfluences.length;
+  
+  // Ensure we don't return duplicates
+  return index1 === index2 
+    ? [availableInfluences[index1], "Guide or mentor to others on their spiritual path"] 
+    : [availableInfluences[index1], availableInfluences[index2]];
+};
+
+/**
+ * Calculate karmic lessons based on birth date
+ */
+const calculateKarmicLessons = (birthDate: Date): string[] => {
+  const day = birthDate.getDate();
+  const month = birthDate.getMonth() + 1;
+  const year = birthDate.getFullYear();
+  
+  const karmicLessonPool = [
+    "Learning to balance self-reliance with accepting help from others",
+    "Developing patience and persistence through life's challenges",
+    "Finding your authentic voice and expressing your truth",
+    "Healing ancestral patterns and generational wounds",
+    "Balancing material success with spiritual growth",
+    "Learning to set healthy boundaries in relationships",
+    "Developing compassion without sacrificing your needs",
+    "Embracing change as a catalyst for growth",
+    "Finding courage to pursue your true purpose",
+    "Learning to trust your intuition and inner guidance",
+    "Balancing giving and receiving in equal measure",
+    "Releasing fear-based thinking and embracing abundance"
+  ];
+  
+  // Select karmic lessons based on birth details
+  const index1 = day % karmicLessonPool.length;
+  const index2 = month % karmicLessonPool.length;
+  const index3 = (year % 100) % karmicLessonPool.length;
+  
+  // Remove duplicates
+  const uniqueIndices = [...new Set([index1, index2, index3])];
+  return uniqueIndices.map(index => karmicLessonPool[index]);
+};
+
+/**
+ * Calculate spiritual gifts based on element and quality
+ */
+const calculateSpiritualGifts = (element: string, quality: string): string[] => {
+  const elementGifts: Record<string, string[]> = {
+    "Fire": ["Inspiration", "Courage", "Leadership", "Passion", "Intuitive insight"],
+    "Earth": ["Manifestation", "Healing touch", "Grounding presence", "Practical wisdom", "Abundance attraction"],
+    "Air": ["Clear communication", "Intellectual insights", "Visionary thinking", "Spiritual connection", "Mediumship"],
+    "Water": ["Emotional healing", "Intuitive dreams", "Psychic perception", "Empathic connection", "Soul recognition"]
+  };
+  
+  const qualityGifts: Record<string, string[]> = {
+    "Cardinal": ["Initiating spiritual paths", "Leadership in spiritual communities", "Opening new doors for others"],
+    "Fixed": ["Maintaining sacred traditions", "Deep spiritual devotion", "Holding space for transformation"],
+    "Mutable": ["Adapting to spiritual teachings", "Bridging different beliefs", "Spiritual versatility"]
+  };
+  
+  // Select gifts from both element and quality
+  const selectedElementGifts = elementGifts[element] || elementGifts["Fire"];
+  const selectedQualityGifts = qualityGifts[quality] || qualityGifts["Cardinal"];
+  
+  // Return 2 element gifts and 1 quality gift
+  return [
+    selectedElementGifts[0], 
+    selectedElementGifts[2], 
+    selectedQualityGifts[0]
+  ];
+};

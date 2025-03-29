@@ -1,11 +1,10 @@
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { getDestinyMeaning, getDestinyTraits } from "@/utils/destinyCalculator";
+import React from "react";
+import { motion } from "framer-motion";
+import { Sparkles, Stars, Heart, Brain, Hand, Zap, Target, Scroll, Calendar, Book, Sparkle, BookOpen, Leaf, Compass, Gem } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getSimilarCelebrities } from "@/utils/apiService";
+import { getDestinyMeaning, getDestinyTraits } from "@/utils/destinyCalculator";
 import { NumerologyProfile } from "@/utils/numerologyCalculator";
-import { Heart, Brain, Palmtree, Star, User, Coins, Award, ArrowUpDown, CalendarDays, BadgePercent } from "lucide-react";
 
 interface PalmFeatures {
   lifeLineLength?: number;
@@ -33,10 +32,32 @@ interface DestinyResultProps {
   palmInsights?: string[];
   dailyForecast?: string;
   luckyDates?: string[];
+  pastLifeInfluences?: string[];
+  karmicLessons?: string[];
+  personalYear?: {
+    number: number;
+    meaning: string;
+    focus: string[];
+  };
+  personalMonth?: {
+    number: number;
+    meaning: string;
+    opportunities: string[];
+  };
+  nameAnalysis?: {
+    vibration: number;
+    qualities: string[];
+    influence: string;
+  };
+  spiritualPath?: {
+    number: number;
+    purpose: string;
+    practices: string[];
+  };
 }
 
-const DestinyResult = ({ 
-  destinyNumber, 
+const DestinyResult: React.FC<DestinyResultProps> = ({
+  destinyNumber,
   isVisible,
   palmFeatures,
   additionalInsights,
@@ -45,628 +66,678 @@ const DestinyResult = ({
   specialTraits,
   palmInsights,
   dailyForecast,
-  luckyDates
-}: DestinyResultProps) => {
-  const meaning = getDestinyMeaning(destinyNumber);
-  const traits = getDestinyTraits(destinyNumber);
-  const [similarCelebrities, setSimilarCelebrities] = useState<string[]>([]);
-  const [isCelebritiesLoading, setIsCelebritiesLoading] = useState(false);
+  luckyDates,
+  pastLifeInfluences,
+  karmicLessons,
+  personalYear,
+  personalMonth,
+  nameAnalysis,
+  spiritualPath
+}) => {
+  if (!isVisible) return null;
 
-  // Fetch celebrities with similar destiny numbers
-  useEffect(() => {
-    if (isVisible && destinyNumber) {
-      const fetchCelebrities = async () => {
-        setIsCelebritiesLoading(true);
-        try {
-          const celebrities = await getSimilarCelebrities(destinyNumber);
-          setSimilarCelebrities(celebrities);
-        } catch (error) {
-          console.error("Error fetching similar celebrities:", error);
-        } finally {
-          setIsCelebritiesLoading(false);
-        }
-      };
-      
-      fetchCelebrities();
-    }
-  }, [isVisible, destinyNumber]);
-  
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          key="result"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.8 }}
-          className="cosmic-card max-w-4xl mx-auto p-6 md:p-8 mb-16"
-        >
-          <div className="text-center mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="cosmic-card p-6 md:p-8 mb-10"
+    >
+      <div className="text-center mb-8">
+        <div className="flex justify-center mb-3">
+          <div className="relative">
+            <div className="bg-cosmic-purple/30 w-20 h-20 rounded-full flex items-center justify-center">
+              <span className="text-4xl font-bold text-cosmic-gold">{destinyNumber}</span>
+            </div>
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 300,
-                damping: 15,
-                delay: 0.2
-              }}
-              className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-cosmic-purple to-cosmic-gold mb-4"
+              className="absolute -top-1 -right-1"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
             >
-              <span className="text-4xl font-bold text-white">{destinyNumber}</span>
+              <Sparkles className="w-5 h-5 text-cosmic-gold" />
             </motion.div>
-            <h2 className="text-2xl md:text-3xl font-bold text-cosmic-light-purple mb-2">
-              Your Cosmic Blueprint
-            </h2>
-            <p className="text-cosmic-light-purple/70">
-              This sacred number reveals your destiny path and life purpose
+          </div>
+        </div>
+        <h2 className="text-2xl md:text-3xl font-bold text-cosmic-light-purple mb-2">
+          Your Destiny Number
+        </h2>
+        <p className="text-cosmic-light-purple/70 max-w-2xl mx-auto">
+          This sacred number reveals your life purpose and spiritual path. It is calculated from your birth date and represents the energies that guide your soul's journey.
+        </p>
+      </div>
+
+      {/* Summary Card */}
+      {numerologyProfile && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="bg-cosmic-dark/50 border border-cosmic-purple/30 p-4 rounded-lg mb-8"
+        >
+          <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+            <Stars className="mr-2 h-5 w-5" /> Cosmic Blueprint Summary
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Mulank (Root Number):</strong> {numerologyProfile.mulank.number}
+              </p>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Bhagyank (Destiny Number):</strong> {numerologyProfile.bhagyank.number}
+              </p>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Power Number:</strong> {numerologyProfile.powerNumber.number}
+              </p>
+              <p className="text-cosmic-light-purple/80">
+                <strong className="text-cosmic-light-purple">Ruling Planet:</strong> {numerologyProfile.rulingPlanet.name}
+              </p>
+            </div>
+            <div>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Element:</strong> {numerologyProfile.elementInfluence?.primaryElement}
+              </p>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Lucky Colors:</strong> {numerologyProfile.luckyColors.slice(0, 2).join(", ")}
+              </p>
+              <p className="text-cosmic-light-purple/80 mb-1">
+                <strong className="text-cosmic-light-purple">Lucky Gemstones:</strong> {numerologyProfile.luckyGemstones.slice(0, 2).join(", ")}
+              </p>
+              <p className="text-cosmic-light-purple/80">
+                <strong className="text-cosmic-light-purple">Compatible Numbers:</strong> {numerologyProfile.compatibleNumbers.join(", ")}
+              </p>
+            </div>
+          </div>
+          
+          {dailyForecast && (
+            <div className="mt-4 bg-cosmic-purple/10 p-3 rounded">
+              <p className="text-cosmic-light-purple font-medium">Today's Forecast:</p>
+              <p className="text-cosmic-light-purple/80 text-sm italic">{dailyForecast}</p>
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      <Tabs defaultValue="overview" className="mt-4">
+        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6 bg-cosmic-dark/40 border border-cosmic-purple/20">
+          <TabsTrigger 
+            value="overview" 
+            className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+          >
+            <Stars className="mr-2 h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger 
+            value="numerology" 
+            className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+          >
+            <Zap className="mr-2 h-4 w-4" />
+            Numerology
+          </TabsTrigger>
+          <TabsTrigger 
+            value="personality" 
+            className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+          >
+            <Brain className="mr-2 h-4 w-4" />
+            Personality
+          </TabsTrigger>
+          <TabsTrigger 
+            value="spiritual" 
+            className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
+          >
+            <Sparkle className="mr-2 h-4 w-4" />
+            Spiritual
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          <div>
+            <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Your Destiny Meaning</h3>
+            <p className="text-cosmic-light-purple/90 leading-relaxed">
+              {getDestinyMeaning(destinyNumber)}
             </p>
           </div>
           
-          <Tabs defaultValue="overview" className="mt-6">
-            <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-6 bg-cosmic-dark/40 border border-cosmic-purple/20">
-              <TabsTrigger 
-                value="overview"
-                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
-              >
-                <Star className="mr-2 h-4 w-4" />
-                Overview
-              </TabsTrigger>
-              <TabsTrigger 
-                value="personality"
-                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
-              >
-                <User className="mr-2 h-4 w-4" />
-                Personality
-              </TabsTrigger>
-              <TabsTrigger 
-                value="palmreading"
-                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
-              >
-                <Palmtree className="mr-2 h-4 w-4" />
-                Palm Reading
-              </TabsTrigger>
-              <TabsTrigger 
-                value="daily"
-                className="data-[state=active]:bg-cosmic-purple/20 data-[state=active]:text-cosmic-light-purple"
-              >
-                <CalendarDays className="mr-2 h-4 w-4" />
-                Daily Insights
-              </TabsTrigger>
-            </TabsList>
-            
-            {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-6">
-              <div>
-                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Your Destiny Meaning</h3>
-                <p className="text-cosmic-light-purple/90 leading-relaxed">
-                  {meaning}
-                </p>
+          <div>
+            <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Key Traits</h3>
+            <div className="flex flex-wrap gap-2">
+              {getDestinyTraits(destinyNumber).map((trait, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + (index * 0.1) }}
+                  className="px-3 py-1 rounded-full bg-cosmic-purple/30 text-cosmic-light-purple"
+                >
+                  {trait}
+                </motion.span>
+              ))}
+            </div>
+          </div>
+          
+          {/* Display additional insights if available */}
+          {additionalInsights && additionalInsights.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Destiny Insights</h3>
+              <ul className="list-disc list-inside space-y-2 text-cosmic-light-purple/90">
+                {additionalInsights.map((insight, index) => (
+                  <li key={index}>{insight}</li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+          
+          {/* Show compatibility if available */}
+          {compatibleNumbers && compatibleNumbers.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+            >
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Compatible Numbers</h3>
+              <div className="flex flex-wrap gap-2">
+                {compatibleNumbers.map((num, index) => (
+                  <span
+                    key={index}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-cosmic-purple/40 text-cosmic-light-purple"
+                  >
+                    {num}
+                  </span>
+                ))}
               </div>
+              <p className="text-cosmic-light-purple/70 text-sm mt-2">
+                These numbers resonate harmoniously with your energy. People, dates, and addresses with these numbers will often bring positive experiences into your life.
+              </p>
+            </motion.div>
+          )}
+          
+          {/* Current Cosmic Influences */}
+          {(personalYear || personalMonth) && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1 }}
+            >
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                <Calendar className="mr-2 h-5 w-5" /> Current Cosmic Influences
+              </h3>
               
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {personalYear && (
+                  <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                    <h4 className="text-cosmic-light-purple font-medium mb-2">Personal Year: {personalYear.number}</h4>
+                    <p className="text-cosmic-light-purple/80 text-sm mb-3">{personalYear.meaning}</p>
+                    <div>
+                      <p className="text-cosmic-light-purple/90 text-sm font-medium mb-1">Focus Areas:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {personalYear.focus.map((focus: string, i: number) => (
+                          <span key={i} className="text-xs bg-cosmic-purple/20 px-2 py-1 rounded-full">
+                            {focus}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {personalMonth && (
+                  <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                    <h4 className="text-cosmic-light-purple font-medium mb-2">Personal Month: {personalMonth.number}</h4>
+                    <p className="text-cosmic-light-purple/80 text-sm mb-3">{personalMonth.meaning}</p>
+                    <div>
+                      <p className="text-cosmic-light-purple/90 text-sm font-medium mb-1">Opportunities:</p>
+                      <div className="flex flex-wrap gap-1">
+                        {personalMonth.opportunities.map((opportunity: string, i: number) => (
+                          <span key={i} className="text-xs bg-cosmic-purple/20 px-2 py-1 rounded-full">
+                            {opportunity}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+          
+          {/* Lucky Dates if available */}
+          {luckyDates && luckyDates.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1 }}
+            >
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Lucky Dates This Month</h3>
+              <div className="flex flex-wrap gap-2">
+                {luckyDates.map((date, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 rounded-full bg-cosmic-gold/30 text-cosmic-light-purple"
+                  >
+                    {date}
+                  </span>
+                ))}
+              </div>
+              <p className="text-cosmic-light-purple/70 text-sm mt-2">
+                These dates align with your numerological and astrological patterns, creating opportunities for success and positive outcomes.
+              </p>
+            </motion.div>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="numerology" className="space-y-6">
+          {numerologyProfile && (
+            <>
               <div>
-                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Key Traits</h3>
-                <div className="flex flex-wrap gap-2">
-                  {traits.map((trait, index) => (
-                    <motion.span
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + (index * 0.1) }}
-                      className="px-3 py-1 rounded-full bg-cosmic-purple/30 text-cosmic-light-purple"
-                    >
+                <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                  <Zap className="mr-2 h-5 w-5" /> Mulank (Root Number): {numerologyProfile.mulank.number}
+                </h3>
+                <p className="text-cosmic-light-purple/90 mb-3">
+                  {numerologyProfile.mulank.meaning}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {numerologyProfile.mulank.traits.map((trait, index) => (
+                    <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
                       {trait}
-                    </motion.span>
+                    </span>
                   ))}
                 </div>
               </div>
               
-              {/* Display additional insights if available */}
-              {additionalInsights && additionalInsights.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.8 }}
-                >
-                  <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Destiny Insights</h3>
-                  <ul className="list-disc list-inside space-y-2 text-cosmic-light-purple/90">
-                    {additionalInsights.map((insight, index) => (
-                      <li key={index}>{insight}</li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
+              <div>
+                <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                  <Target className="mr-2 h-5 w-5" /> Bhagyank (Destiny Number): {numerologyProfile.bhagyank.number}
+                </h3>
+                <p className="text-cosmic-light-purple/90 mb-3">
+                  {numerologyProfile.bhagyank.meaning}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {numerologyProfile.bhagyank.traits.map((trait, index) => (
+                    <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                      {trait}
+                    </span>
+                  ))}
+                </div>
+              </div>
               
-              {/* Show compatibility if available */}
-              {compatibleNumbers && compatibleNumbers.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1 }}
-                >
+              <div>
+                <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                  <Sparkles className="mr-2 h-5 w-5" /> Power Number: {numerologyProfile.powerNumber.number}
+                </h3>
+                <p className="text-cosmic-light-purple/90">
+                  {numerologyProfile.powerNumber.meaning}
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Ruling Planet: {numerologyProfile.rulingPlanet.name}</h3>
+                <p className="text-cosmic-light-purple/90">
+                  {numerologyProfile.rulingPlanet.influence}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
                   <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Compatible Numbers</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {compatibleNumbers.map((num, index) => (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {numerologyProfile.compatibleNumbers.map((num, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-cosmic-gold/20 text-cosmic-gold font-medium"
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-cosmic-purple/40 text-cosmic-light-purple"
                       >
                         {num}
                       </span>
                     ))}
                   </div>
-                  <p className="mt-2 text-sm text-cosmic-light-purple/70">
-                    These numbers resonate harmoniously with your destiny vibration
+                  <p className="text-cosmic-light-purple/70 text-sm">
+                    These numbers enhance your energy and bring harmony.
                   </p>
-                </motion.div>
-              )}
-              
-              {/* Show celebrities with same destiny number */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.2 }}
-              >
-                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Celebrities With Your Destiny Number</h3>
-                {isCelebritiesLoading ? (
-                  <p className="text-cosmic-light-purple/70">Loading celebrity matches...</p>
-                ) : similarCelebrities.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {similarCelebrities.map((celebrity, index) => (
-                      <div 
+                </div>
+                
+                <div>
+                  <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Challenging Numbers</h3>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {numerologyProfile.incompatibleNumbers.map((num, index) => (
+                      <span
                         key={index}
-                        className="flex items-center gap-2 bg-cosmic-dark/30 p-2 rounded-md border border-cosmic-purple/20"
+                        className="w-8 h-8 flex items-center justify-center rounded-full bg-cosmic-purple/20 text-cosmic-light-purple/70"
                       >
-                        <Award className="h-4 w-4 text-cosmic-gold" />
-                        <span className="text-cosmic-light-purple">{celebrity}</span>
-                      </div>
+                        {num}
+                      </span>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-cosmic-light-purple/70">No celebrity matches found</p>
-                )}
-              </motion.div>
-            </TabsContent>
-            
-            {/* Personality Tab */}
-            <TabsContent value="personality" className="space-y-6">
-              {numerologyProfile ? (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-cosmic-dark/30 p-4 rounded-lg border border-cosmic-purple/20">
-                      <h3 className="text-lg text-cosmic-gold mb-2 font-medium">Mulank (Root Number): {numerologyProfile.mulank.number}</h3>
-                      <p className="text-cosmic-light-purple/90 text-sm mb-2">{numerologyProfile.mulank.meaning}</p>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {numerologyProfile.mulank.traits.map((trait, index) => (
-                          <span key={index} className="bg-cosmic-purple/20 px-2 py-0.5 rounded-full text-xs text-cosmic-light-purple">
-                            {trait}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="bg-cosmic-dark/30 p-4 rounded-lg border border-cosmic-purple/20">
-                      <h3 className="text-lg text-cosmic-gold mb-2 font-medium">Bhagyank (Destiny Number): {numerologyProfile.bhagyank.number}</h3>
-                      <p className="text-cosmic-light-purple/90 text-sm mb-2">{numerologyProfile.bhagyank.meaning}</p>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {numerologyProfile.bhagyank.traits.map((trait, index) => (
-                          <span key={index} className="bg-cosmic-purple/20 px-2 py-0.5 rounded-full text-xs text-cosmic-light-purple">
-                            {trait}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Power Number: {numerologyProfile.powerNumber.number}</h3>
-                    <p className="text-cosmic-light-purple/90">{numerologyProfile.powerNumber.meaning}</p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Ruling Planet: {numerologyProfile.rulingPlanet.name}</h3>
-                    <p className="text-cosmic-light-purple/90">{numerologyProfile.rulingPlanet.influence}</p>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Personality Profile</h3>
-                    <p className="text-cosmic-light-purple/90 mb-4">{numerologyProfile.personalityOverview}</p>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="text-lg text-cosmic-light-purple mb-2 flex items-center">
-                          <Brain className="h-4 w-4 mr-2 text-cosmic-gold" />
-                          Mind & Emotions
-                        </h4>
-                        <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/80 text-sm">
-                          {numerologyProfile.lifeLessons.slice(0, 3).map((lesson, index) => (
-                            <li key={index}>{lesson}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-lg text-cosmic-light-purple mb-2 flex items-center">
-                          <Heart className="h-4 w-4 mr-2 text-cosmic-gold" />
-                          Relationships
-                        </h4>
-                        <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/80 text-sm">
-                          {numerologyProfile.relationshipTraits.slice(0, 3).map((trait, index) => (
-                            <li key={index}>{trait}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-lg text-cosmic-gold mb-3 font-medium flex items-center">
-                        <BadgePercent className="h-4 w-4 mr-2" />
-                        Career Paths
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {numerologyProfile.careerPaths.map((path, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm"
-                          >
-                            {path}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg text-cosmic-gold mb-3 font-medium flex items-center">
-                        <Coins className="h-4 w-4 mr-2" />
-                        Financial Traits
-                      </h3>
-                      <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/80 text-sm">
-                        {numerologyProfile.financialTraits.slice(0, 2).map((trait, index) => (
-                          <li key={index}>{trait}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Life Challenges & Lessons</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-2">Challenges to Overcome:</h4>
-                        <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/80 text-sm">
-                          {numerologyProfile.lifeChallenges.slice(0, 3).map((challenge, index) => (
-                            <li key={index}>{challenge}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-2">Key Life Lessons:</h4>
-                        <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/80 text-sm">
-                          {numerologyProfile.lifeLessons.slice(0, 3).map((lesson, index) => (
-                            <li key={index}>{lesson}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Lucky Elements</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-2">Lucky Colors:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {numerologyProfile.luckyColors.map((color, index) => (
-                            <div 
-                              key={index} 
-                              className="flex items-center gap-1 px-2 py-1 rounded-full bg-cosmic-dark/40 border border-cosmic-purple/20"
-                            >
-                              <span 
-                                className="w-3 h-3 rounded-full" 
-                                style={{ 
-                                  backgroundColor: color.toLowerCase() === "gold" ? "#FFD700" : 
-                                              color.toLowerCase() === "silver" ? "#C0C0C0" : 
-                                              color
-                                }}
-                              ></span>
-                              <span className="text-xs text-cosmic-light-purple">{color}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-2">Lucky Gemstones:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {numerologyProfile.luckyGemstones.map((stone, index) => (
-                            <span 
-                              key={index}
-                              className="px-2 py-1 rounded-full bg-cosmic-dark/40 border border-cosmic-purple/20 text-xs text-cosmic-light-purple"
-                            >
-                              {stone}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {specialTraits && specialTraits.length > 0 && (
-                    <div>
-                      <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Special Cosmic Traits</h3>
-                      <div className="bg-cosmic-dark/30 p-4 rounded-lg border border-cosmic-purple/20">
-                        {specialTraits.map((trait, index) => (
-                          <p key={index} className="text-cosmic-light-purple/90 mb-2">{trait}</p>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-cosmic-light-purple/70">
-                    More detailed personality insights are available with enhanced destiny analysis. 
-                    Please select "Use Enhanced API Analysis" when scanning your birth date.
+                  <p className="text-cosmic-light-purple/70 text-sm">
+                    These numbers may create friction or challenges.
                   </p>
                 </div>
-              )}
-            </TabsContent>
-            
-            {/* Palm Reading Tab */}
-            <TabsContent value="palmreading" className="space-y-6">
-              {palmFeatures ? (
-                <>
-                  <div className="p-5 bg-cosmic-dark/40 rounded-lg border border-cosmic-purple/30">
-                    <h3 className="text-xl text-cosmic-gold mb-4 font-medium">Palm Reading Analysis</h3>
-                    
-                    {palmFeatures.dominantMount && (
-                      <div className="mb-4">
-                        <span className="text-cosmic-light-purple font-medium">Dominant Mount:</span>{" "}
-                        <span className="text-cosmic-light-purple/90">{palmFeatures.dominantMount}</span>
-                        <p className="text-sm text-cosmic-light-purple/70 mt-1">
-                          {palmFeatures.dominantMount === "Venus" && "Indicates creativity, love, and sensuality in your nature"}
-                          {palmFeatures.dominantMount === "Jupiter" && "Shows leadership qualities, ambition, and natural authority"}
-                          {palmFeatures.dominantMount === "Saturn" && "Reveals wisdom, responsibility, and disciplined nature"}
-                          {palmFeatures.dominantMount === "Apollo" && "Signifies artistic talent, recognition, and success orientation"}
-                          {palmFeatures.dominantMount === "Mercury" && "Indicates intelligence, communication skills, and adaptability"}
-                        </p>
-                      </div>
-                    )}
-                    
-                    {palmFeatures.specialMarks && palmFeatures.specialMarks.length > 0 && (
-                      <div className="mb-4">
-                        <span className="text-cosmic-light-purple font-medium">Special Markings:</span>
-                        {palmFeatures.specialMarks.map((mark, index) => (
-                          <div key={index} className="mt-2 pl-3 border-l-2 border-cosmic-purple/30">
-                            <p className="text-cosmic-light-purple/90">
-                              <span className="text-cosmic-gold">{mark.type}</span> on your {mark.location}
-                            </p>
-                            <p className="text-sm text-cosmic-light-purple/70">
-                              Meaning: {mark.meaning}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-3 flex items-center">
-                          <Palmtree className="h-4 w-4 mr-2 text-cosmic-gold" />
-                          Life & Fate Lines
-                        </h4>
-                        <div className="space-y-3">
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-cosmic-light-purple/80">Life Line Strength:</span>
-                              <span className="text-sm text-cosmic-gold">
-                                {palmFeatures.lifeLineLength ? `${palmFeatures.lifeLineLength}/10` : "N/A"}
-                              </span>
-                            </div>
-                            <div className="w-full h-2 bg-cosmic-dark rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-cosmic-gold/70 rounded-full" 
-                                style={{ width: `${palmFeatures.lifeLineLength ? palmFeatures.lifeLineLength * 10 : 0}%` }}
-                              ></div>
-                            </div>
-                            <p className="text-xs text-cosmic-light-purple/60 mt-1">
-                              {palmFeatures.lifeLineLength && palmFeatures.lifeLineLength > 7 ? 
-                                "Strong life force and vitality throughout your life journey" :
-                                palmFeatures.lifeLineLength && palmFeatures.lifeLineLength > 4 ?
-                                "Balanced energy and generally healthy life prospects" :
-                                "Focus on quality of life experiences rather than quantity"}
-                            </p>
-                          </div>
-                          
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-cosmic-light-purple/80">Fate Line Presence:</span>
-                              <span className="text-sm text-cosmic-gold">
-                                {palmFeatures.fateLinePresence ? "Present" : "Faint/Absent"}
-                              </span>
-                            </div>
-                            <div className="w-full h-2 bg-cosmic-dark rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-cosmic-purple/70 rounded-full" 
-                                style={{ width: palmFeatures.fateLinePresence ? "100%" : "30%" }}
-                              ></div>
-                            </div>
-                            <p className="text-xs text-cosmic-light-purple/60 mt-1">
-                              {palmFeatures.fateLinePresence ? 
-                                "Strong sense of purpose and destiny in your life path" :
-                                "More flexible and self-directed life journey"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-cosmic-light-purple mb-3 flex items-center">
-                          <Heart className="h-4 w-4 mr-2 text-cosmic-gold" />
-                          Heart & Head Lines
-                        </h4>
-                        <div className="space-y-3">
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-cosmic-light-purple/80">Heart Line Strength:</span>
-                              <span className="text-sm text-cosmic-gold">
-                                {palmFeatures.heartLineStrength ? `${Math.round(palmFeatures.heartLineStrength * 10)}/10` : "N/A"}
-                              </span>
-                            </div>
-                            <div className="w-full h-2 bg-cosmic-dark rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-cosmic-gold/70 rounded-full" 
-                                style={{ width: `${(palmFeatures.heartLineStrength || 0) * 100}%` }}
-                              ></div>
-                            </div>
-                            <p className="text-xs text-cosmic-light-purple/60 mt-1">
-                              {palmFeatures.heartLineStrength && palmFeatures.heartLineStrength > 0.7 ? 
-                                "Deep emotional nature with strong romantic tendencies" :
-                                palmFeatures.heartLineStrength && palmFeatures.heartLineStrength > 0.4 ?
-                                "Balanced emotional approach to relationships" :
-                                "Practical and measured approach to emotional matters"}
-                            </p>
-                          </div>
-                          
-                          <div>
-                            <div className="flex justify-between mb-1">
-                              <span className="text-sm text-cosmic-light-purple/80">Head Line Depth:</span>
-                              <span className="text-sm text-cosmic-gold">
-                                {palmFeatures.headLineDepth ? `${Math.round(palmFeatures.headLineDepth * 10)}/10` : "N/A"}
-                              </span>
-                            </div>
-                            <div className="w-full h-2 bg-cosmic-dark rounded-full overflow-hidden">
-                              <div 
-                                className="h-full bg-cosmic-purple/70 rounded-full" 
-                                style={{ width: `${(palmFeatures.headLineDepth || 0) * 100}%` }}
-                              ></div>
-                            </div>
-                            <p className="text-xs text-cosmic-light-purple/60 mt-1">
-                              {palmFeatures.headLineDepth && palmFeatures.headLineDepth > 0.7 ? 
-                                "Deep analytical thinking and strong intellectual abilities" :
-                                palmFeatures.headLineDepth && palmFeatures.headLineDepth > 0.4 ?
-                                "Good balance of practical and creative thinking" :
-                                "Intuitive and spontaneous thought processes"}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {palmInsights && palmInsights.length > 0 && (
-                      <div className="mt-4">
-                        <h4 className="text-cosmic-light-purple mb-2">Palm Reading Insights:</h4>
-                        <ul className="list-disc list-inside space-y-2 text-cosmic-light-purple/80">
-                          {palmInsights.map((insight, index) => (
-                            <li key={index}>{insight}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    <p className="text-xs text-cosmic-light-purple/60 mt-4 italic">
-                      * Palm analysis results are based on advanced pattern recognition of palm lines and features
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-cosmic-light-purple/70">
-                    Palm reading analysis is available when you scan your palm using the Palm Scanner.
-                    <br />
-                    Select "Enhanced Analysis Mode" for more detailed palm reading insights.
+              </div>
+              
+              {/* Name Analysis if available */}
+              {nameAnalysis && (
+                <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                  <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                    <Book className="mr-2 h-5 w-5" /> Name Vibration: {nameAnalysis.vibration}
+                  </h3>
+                  <p className="text-cosmic-light-purple/90 mb-3">
+                    {nameAnalysis.influence}
                   </p>
-                </div>
-              )}
-            </TabsContent>
-            
-            {/* Daily Insights Tab */}
-            <TabsContent value="daily" className="space-y-6">
-              <div className="p-5 bg-cosmic-dark/40 rounded-lg border border-cosmic-purple/30">
-                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Daily Cosmic Alignment</h3>
-                {dailyForecast ? (
-                  <p className="text-cosmic-light-purple/90 mb-4">{dailyForecast}</p>
-                ) : (
-                  <p className="text-cosmic-light-purple/70">
-                    Daily forecasts are available with enhanced destiny analysis. 
-                    Please select "Use Enhanced API Analysis" when scanning your birth date.
-                  </p>
-                )}
-                
-                {luckyDates && luckyDates.length > 0 && (
-                  <div className="mt-4">
-                    <h4 className="text-cosmic-light-purple mb-2">Lucky Dates This Month:</h4>
+                  <div>
+                    <h4 className="text-cosmic-light-purple font-medium mb-2">Name Qualities:</h4>
                     <div className="flex flex-wrap gap-2">
-                      {luckyDates.map((date, index) => (
-                        <span 
-                          key={index}
-                          className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm"
-                        >
-                          {date}
+                      {nameAnalysis.qualities.map((quality: string, index: number) => (
+                        <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                          {quality}
                         </span>
                       ))}
                     </div>
                   </div>
-                )}
-                
-                <div className="mt-6">
-                  <h4 className="text-cosmic-light-purple mb-3">Cosmic Affirmation for Today</h4>
-                  <div className="bg-cosmic-dark/30 p-3 rounded-lg border border-cosmic-purple/20 italic text-cosmic-light-purple/90">
-                    {destinyNumber === 1 && "I am a powerful creator, manifesting my unique path with confidence and courage."}
-                    {destinyNumber === 2 && "I bring harmony and cooperation to all my relationships, creating peace wherever I go."}
-                    {destinyNumber === 3 && "I express my creativity freely, bringing joy and inspiration to myself and others."}
-                    {destinyNumber === 4 && "I build solid foundations for my future, creating stability and security in all areas of life."}
-                    {destinyNumber === 5 && "I embrace change as my ally, finding freedom and adventure in life's journey."}
-                    {destinyNumber === 6 && "I balance giving and receiving, nurturing myself as I care for others."}
-                    {destinyNumber === 7 && "I trust my inner wisdom, finding answers in both analysis and intuition."}
-                    {destinyNumber === 8 && "I manifest abundance with integrity, using my power to create positive change."}
-                    {destinyNumber === 9 && "I serve with compassion and wisdom, completing cycles to make way for new beginnings."}
-                    {destinyNumber === 11 && "I channel higher wisdom into practical inspiration, illuminating paths for myself and others."}
-                    {destinyNumber === 22 && "I transform dreams into reality through practical vision and masterful building."}
-                    {destinyNumber === 33 && "I teach through compassionate example, bringing healing and enlightenment to all I touch."}
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-cosmic-gold mb-2 font-medium">Lucky Colors</h3>
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {numerologyProfile.luckyColors.map((color, index) => (
+                      <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                        {color}
+                      </span>
+                    ))}
                   </div>
                 </div>
                 
-                <div className="mt-6">
-                  <h4 className="text-cosmic-light-purple mb-3">Success Mantra Based on Your Destiny</h4>
-                  <div className="bg-cosmic-dark/30 p-3 rounded-lg border border-cosmic-purple/20 text-cosmic-light-purple/90">
-                    <p className="font-medium mb-1">
-                      {destinyNumber === 1 && "Lead with courage, innovate with vision."}
-                      {destinyNumber === 2 && "Harmonize with patience, nurture with intuition."}
-                      {destinyNumber === 3 && "Express with joy, create with passion."}
-                      {destinyNumber === 4 && "Build with diligence, organize with purpose."}
-                      {destinyNumber === 5 && "Adapt with grace, experience with curiosity."}
-                      {destinyNumber === 6 && "Nurture with boundaries, serve with balance."}
-                      {destinyNumber === 7 && "Analyze with depth, trust your inner knowing."}
-                      {destinyNumber === 8 && "Manifest with ethics, lead with responsibility."}
-                      {destinyNumber === 9 && "Complete with gratitude, serve with compassion."}
-                      {destinyNumber === 11 && "Inspire with insight, channel with clarity."}
-                      {destinyNumber === 22 && "Build with vision, transform with mastery."}
-                      {destinyNumber === 33 && "Teach with love, elevate with selflessness."}
-                    </p>
-                    <p className="text-sm">
-                      Repeat this mantra during meditation, when facing challenges, or upon waking to align with your cosmic purpose.
-                    </p>
+                <div>
+                  <h3 className="text-cosmic-gold mb-2 font-medium">Lucky Gemstones</h3>
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {numerologyProfile.luckyGemstones.map((stone, index) => (
+                      <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                        {stone}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="personality" className="space-y-6">
+          {numerologyProfile && (
+            <>
+              <div>
+                <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Personality Overview</h3>
+                <p className="text-cosmic-light-purple/90 leading-relaxed">
+                  {numerologyProfile.personalityOverview}
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium flex items-center">
+                    <Heart className="mr-2 h-5 w-5" /> Relationship Traits
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {numerologyProfile.relationshipTraits.map((trait, index) => (
+                      <li key={index} className="text-sm">
+                        {trait}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium flex items-center">
+                    <Gem className="mr-2 h-5 w-5" /> Financial Traits
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {numerologyProfile.financialTraits.map((trait, index) => (
+                      <li key={index} className="text-sm">
+                        {trait}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium">Health Traits</h3>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {numerologyProfile.healthTraits.map((trait, index) => (
+                      <li key={index} className="text-sm">
+                        {trait}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium">Career Paths</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {numerologyProfile.careerPaths.map((career, index) => (
+                      <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                        {career}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
               
-              <div className="text-center text-cosmic-light-purple/60 text-xs">
-                <p>
-                  Daily insights are refreshed each day and are influenced by your destiny number and current cosmic alignments.
-                  <br />
-                  For more personalized daily guidance, use the enhanced API analysis option.
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium">Life Challenges</h3>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {numerologyProfile.lifeChallenges.map((challenge, index) => (
+                      <li key={index} className="text-sm">
+                        {challenge}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h3 className="text-cosmic-gold mb-3 font-medium">Life Lessons</h3>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {numerologyProfile.lifeLessons.map((lesson, index) => (
+                      <li key={index} className="text-sm">
+                        {lesson}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              {/* Display palm readings if available */}
+              {palmFeatures && (
+                <div className="mt-4">
+                  <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                    <Hand className="mr-2 h-5 w-5" /> Palm Reading Insights
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="text-cosmic-light-purple font-medium mb-2">Major Lines:</h4>
+                      <ul className="space-y-2 text-cosmic-light-purple/90">
+                        {palmFeatures.lifeLineLength && (
+                          <li className="text-sm">
+                            <strong>Life Line:</strong> {palmFeatures.lifeLineLength > 0.7 
+                              ? "Long, indicating vitality and resilience" 
+                              : "Moderate, showing practical energy management"}
+                          </li>
+                        )}
+                        {palmFeatures.heartLineStrength && (
+                          <li className="text-sm">
+                            <strong>Heart Line:</strong> {palmFeatures.heartLineStrength > 0.6 
+                              ? "Strong, showing deep emotional capacity" 
+                              : "Balanced, indicating emotional stability"}
+                          </li>
+                        )}
+                        {palmFeatures.headLineDepth && (
+                          <li className="text-sm">
+                            <strong>Head Line:</strong> {palmFeatures.headLineDepth > 0.6 
+                              ? "Deep, showing analytical thinking" 
+                              : "Flowing, indicating creative thoughts"}
+                          </li>
+                        )}
+                        {palmFeatures.fateLinePresence !== undefined && (
+                          <li className="text-sm">
+                            <strong>Fate Line:</strong> {palmFeatures.fateLinePresence 
+                              ? "Prominent, showing a strong sense of destiny" 
+                              : "Subtle, indicating flexibility in life path"}
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="text-cosmic-light-purple font-medium mb-2">Special Features:</h4>
+                      <ul className="space-y-2 text-cosmic-light-purple/90">
+                        {palmFeatures.dominantMount && (
+                          <li className="text-sm">
+                            <strong>Dominant Mount:</strong> Mount of {palmFeatures.dominantMount}, 
+                            indicating {palmFeatures.dominantMount === 'Venus' 
+                              ? 'strong creative and romantic energy' 
+                              : palmFeatures.dominantMount === 'Jupiter' 
+                                ? 'leadership qualities and ambition' 
+                                : palmFeatures.dominantMount === 'Saturn' 
+                                  ? 'wisdom and responsibility' 
+                                  : palmFeatures.dominantMount === 'Apollo' 
+                                    ? 'creative talent and recognition' 
+                                    : 'intellectual abilities and communication skills'}
+                          </li>
+                        )}
+                        {palmFeatures.specialMarks && palmFeatures.specialMarks.length > 0 && 
+                          palmFeatures.specialMarks.map((mark, index) => (
+                            <li key={index} className="text-sm">
+                              <strong>{mark.type}:</strong> {mark.meaning} (found in {mark.location})
+                            </li>
+                          ))
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  {/* Display palm insights if available */}
+                  {palmInsights && palmInsights.length > 0 && (
+                    <div className="mt-4 bg-cosmic-purple/10 p-3 rounded">
+                      <h4 className="text-cosmic-light-purple font-medium mb-2">Palm Reader's Insights:</h4>
+                      <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                        {palmInsights.map((insight, index) => (
+                          <li key={index} className="text-sm">
+                            {insight}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="spiritual" className="space-y-6">
+          {/* Past Life Influences */}
+          {pastLifeInfluences && pastLifeInfluences.length > 0 && (
+            <div>
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                <BookOpen className="mr-2 h-5 w-5" /> Past Life Influences
+              </h3>
+              <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                <p className="text-cosmic-light-purple/90 mb-3">
+                  Your soul carries wisdom from previous incarnations. These past lives continue to influence your current path and provide soul memories that may manifest as:
+                </p>
+                <ul className="list-disc list-inside space-y-2 text-cosmic-light-purple/90">
+                  {pastLifeInfluences.map((influence, index) => (
+                    <li key={index} className="text-sm">
+                      {influence}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          
+          {/* Karmic Lessons */}
+          {karmicLessons && karmicLessons.length > 0 && (
+            <div>
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                <Scroll className="mr-2 h-5 w-5" /> Karmic Lessons
+              </h3>
+              <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                <p className="text-cosmic-light-purple/90 mb-3">
+                  These are the spiritual lessons your soul has chosen to master in this lifetime:
+                </p>
+                <ul className="list-disc list-inside space-y-2 text-cosmic-light-purple/90">
+                  {karmicLessons.map((lesson, index) => (
+                    <li key={index} className="text-sm">
+                      {lesson}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+          
+          {/* Spiritual Path */}
+          {spiritualPath && (
+            <div>
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium flex items-center">
+                <Compass className="mr-2 h-5 w-5" /> Spiritual Path: {spiritualPath.number}
+              </h3>
+              <div className="bg-cosmic-purple/10 p-4 rounded-lg">
+                <p className="text-cosmic-light-purple/90 mb-3">
+                  <strong>Soul Purpose:</strong> {spiritualPath.purpose}
+                </p>
+                <div>
+                  <h4 className="text-cosmic-light-purple font-medium mb-2">Spiritual Practices That Support Your Path:</h4>
+                  <ul className="list-disc list-inside space-y-1 text-cosmic-light-purple/90">
+                    {spiritualPath.practices.map((practice: string, index: number) => (
+                      <li key={index} className="text-sm">
+                        {practice}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Special Traits */}
+          {specialTraits && specialTraits.length > 0 && (
+            <div>
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Spiritual Gifts</h3>
+              <div className="flex flex-wrap gap-2">
+                {specialTraits.map((trait, index) => (
+                  <span key={index} className="px-3 py-1 rounded-full bg-cosmic-purple/20 text-cosmic-light-purple text-sm">
+                    {trait}
+                  </span>
+                ))}
+              </div>
+              <p className="text-cosmic-light-purple/70 text-sm mt-2">
+                These are your innate spiritual talents and abilities that you can develop and share with the world.
+              </p>
+            </div>
+          )}
+          
+          {/* Daily Mantra */}
+          {dailyForecast && (
+            <div>
+              <h3 className="text-xl text-cosmic-gold mb-3 font-medium">Daily Mantra</h3>
+              <div className="bg-cosmic-purple/20 p-5 rounded-lg text-center italic">
+                <p className="text-cosmic-light-purple">
+                  "{dailyForecast.split('.')[0]}."
                 </p>
               </div>
-            </TabsContent>
-          </Tabs>
-        </motion.div>
-      )}
-    </AnimatePresence>
+              <p className="text-cosmic-light-purple/70 text-sm mt-2 text-center">
+                Repeat this mantra three times each morning to align with your cosmic energy.
+              </p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
+    </motion.div>
   );
 };
 

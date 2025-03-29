@@ -1,4 +1,3 @@
-
 /**
  * Advanced numerology calculations for destiny number, life path, personality traits and more
  */
@@ -33,6 +32,26 @@ export interface NumerologyProfile {
   lifeLessons: string[];
   luckyColors: string[];
   luckyGemstones: string[];
+  personalYear?: {
+    number: number;
+    meaning: string;
+    focus: string[];
+  };
+  personalMonth?: {
+    number: number;
+    meaning: string;
+    opportunities: string[];
+  };
+  nameAnalysis?: {
+    vibration: number;
+    qualities: string[];
+    influence: string;
+  };
+  spiritualPath?: {
+    number: number;
+    purpose: string;
+    practices: string[];
+  };
 }
 
 /**
@@ -679,3 +698,341 @@ const determineLuckyGemstones = (bhagyank: number): string[] => {
   return gemstonesByNumber[bhagyank] || ["Clear Quartz", "Amethyst", "Rose Quartz", "Citrine", "Jade"];
 };
 
+/**
+ * Calculate personal year number based on current date and birth date
+ */
+export const calculatePersonalYear = (birthDate: Date): { number: number; meaning: string; focus: string[] } => {
+  const currentYear = new Date().getFullYear();
+  const birthMonth = birthDate.getMonth() + 1;
+  const birthDay = birthDate.getDate();
+  
+  // Add birth month and day to current year
+  let personalYearSum = birthMonth + birthDay + currentYear;
+  
+  // Reduce to a single digit, except for master numbers
+  while (personalYearSum > 9 && personalYearSum !== 11 && personalYearSum !== 22 && personalYearSum !== 33) {
+    let tempSum = 0;
+    personalYearSum.toString().split('').forEach(digit => {
+      tempSum += parseInt(digit);
+    });
+    personalYearSum = tempSum;
+  }
+  
+  const personalYearMeanings: Record<number, { meaning: string; focus: string[] }> = {
+    1: {
+      meaning: "A year of new beginnings, fresh starts, and planting seeds for future growth.",
+      focus: ["Initiative", "Leadership", "Independence", "Self-development", "New projects"]
+    },
+    2: {
+      meaning: "A year of partnerships, cooperation, and developing patience in relationships.",
+      focus: ["Diplomacy", "Cooperation", "Sensitivity", "Building connections", "Finding balance"]
+    },
+    3: {
+      meaning: "A year of creativity, self-expression, and social connections.",
+      focus: ["Communication", "Creative projects", "Social expansion", "Optimism", "Self-expression"]
+    },
+    4: {
+      meaning: "A year of building foundations, establishing order, and practical achievement.",
+      focus: ["Organization", "Hard work", "Practical matters", "Building structures", "Security"]
+    },
+    5: {
+      meaning: "A year of change, freedom, adventure, and new experiences.",
+      focus: ["Travel", "Freedom", "Adaptability", "New experiences", "Breaking routines"]
+    },
+    6: {
+      meaning: "A year of responsibility, service, family focus, and creating harmony.",
+      focus: ["Family matters", "Domestic improvements", "Service to others", "Balance", "Nurturing"]
+    },
+    7: {
+      meaning: "A year of reflection, spiritual development, and inner wisdom.",
+      focus: ["Study", "Analysis", "Spiritual growth", "Research", "Meditation"]
+    },
+    8: {
+      meaning: "A year of achievement, material gains, and exercising personal power.",
+      focus: ["Business", "Financial matters", "Power", "Recognition", "Manifestation"]
+    },
+    9: {
+      meaning: "A year of completion, letting go, and humanitarian service.",
+      focus: ["Endings", "Completion", "Service to humanity", "Universal love", "Forgiveness"]
+    },
+    11: {
+      meaning: "A master year of spiritual illumination, intuition, and inspiring others.",
+      focus: ["Inspiration", "Intuition", "Spiritual insight", "Teaching", "Elevated awareness"]
+    },
+    22: {
+      meaning: "A master year of building important projects that benefit many people.",
+      focus: ["Large-scale projects", "Practical vision", "Building something significant", "Master building", "Service"]
+    },
+    33: {
+      meaning: "A master year of spiritual teaching, healing, and uplifting others.",
+      focus: ["Compassionate service", "Teaching", "Healing", "Nurturing humanity", "Spiritual expression"]
+    }
+  };
+  
+  return {
+    number: personalYearSum,
+    meaning: personalYearMeanings[personalYearSum]?.meaning || "A year of unique cosmic energies influencing your path.",
+    focus: personalYearMeanings[personalYearSum]?.focus || ["Self-discovery", "Balance", "Growth", "Transformation", "Awareness"]
+  };
+};
+
+/**
+ * Calculate personal month number based on current date and birth date
+ */
+export const calculatePersonalMonth = (birthDate: Date): { number: number; meaning: string; opportunities: string[] } => {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+  const birthDay = birthDate.getDate();
+  
+  // Calculate personal year first
+  const personalYear = calculatePersonalYear(birthDate);
+  
+  // Add personal year number to current month
+  let personalMonthSum = personalYear.number + currentMonth;
+  
+  // Reduce to a single digit, except for master numbers
+  while (personalMonthSum > 9 && personalMonthSum !== 11 && personalMonthSum !== 22 && personalMonthSum !== 33) {
+    let tempSum = 0;
+    personalMonthSum.toString().split('').forEach(digit => {
+      tempSum += parseInt(digit);
+    });
+    personalMonthSum = tempSum;
+  }
+  
+  const personalMonthMeanings: Record<number, { meaning: string; opportunities: string[] }> = {
+    1: {
+      meaning: "A month to initiate new projects and take the lead in your life.",
+      opportunities: ["Starting new projects", "Taking leadership", "Being assertive", "Self-promotion", "Independent action"]
+    },
+    2: {
+      meaning: "A month to focus on relationships, cooperation, and finding balance.",
+      opportunities: ["Deepening relationships", "Diplomatic solutions", "Listening to others", "Finding middle ground", "Patient progress"]
+    },
+    3: {
+      meaning: "A month for creative expression, socializing, and optimistic expansion.",
+      opportunities: ["Creative projects", "Social gatherings", "Communication", "Joyful expression", "Networking"]
+    },
+    4: {
+      meaning: "A month for organization, practical work, and building foundations.",
+      opportunities: ["Setting up systems", "Hard work", "Creating order", "Focus on details", "Building stability"]
+    },
+    5: {
+      meaning: "A month of change, freedom, and new experiences.",
+      opportunities: ["Travel plans", "Breaking routines", "Trying new things", "Freedom from restrictions", "Flexibility"]
+    },
+    6: {
+      meaning: "A month of responsibility, service, and creating harmony at home.",
+      opportunities: ["Family matters", "Home improvements", "Helping others", "Creating beauty", "Finding balance"]
+    },
+    7: {
+      meaning: "A month for reflection, analysis, and spiritual development.",
+      opportunities: ["Research", "Study", "Spiritual practice", "Seeking solitude", "Inner work"]
+    },
+    8: {
+      meaning: "A month for achievement, financial matters, and personal power.",
+      opportunities: ["Business deals", "Financial planning", "Executive action", "Recognition", "Power moves"]
+    },
+    9: {
+      meaning: "A month of completion, letting go, and service to others.",
+      opportunities: ["Finishing projects", "Releasing the old", "Humanitarian work", "Forgiveness", "Surrender"]
+    },
+    11: {
+      meaning: "A spiritually charged month of intuition and inspiration.",
+      opportunities: ["Intuitive insights", "Spiritual awakening", "Inspirational activities", "Teaching", "Visionary ideas"]
+    },
+    22: {
+      meaning: "A month of practical achievement on a large scale.",
+      opportunities: ["Building something significant", "Practical leadership", "Community service", "Manifesting visions", "Masterful work"]
+    },
+    33: {
+      meaning: "A month of compassionate service and uplifting others.",
+      opportunities: ["Healing work", "Teaching with love", "Nurturing service", "Spiritual guidance", "Unconditional love"]
+    }
+  };
+  
+  return {
+    number: personalMonthSum,
+    meaning: personalMonthMeanings[personalMonthSum]?.meaning || "A month of unique cosmic alignment and opportunity.",
+    opportunities: personalMonthMeanings[personalMonthSum]?.opportunities || ["Self-awareness", "Balanced action", "Growth opportunities", "Spiritual alignment", "Personal development"]
+  };
+};
+
+/**
+ * Analyze name vibration and influence based on a name
+ */
+export const analyzeNameNumerology = (name: string): { vibration: number; qualities: string[]; influence: string } => {
+  if (!name || name.trim() === '') {
+    return {
+      vibration: 0,
+      qualities: ["Unknown"],
+      influence: "Please provide a name for accurate analysis."
+    };
+  }
+  
+  // Convert letters to numbers based on Pythagorean numerology
+  const letterValues: Record<string, number> = {
+    'a': 1, 'j': 1, 's': 1,
+    'b': 2, 'k': 2, 't': 2,
+    'c': 3, 'l': 3, 'u': 3,
+    'd': 4, 'm': 4, 'v': 4,
+    'e': 5, 'n': 5, 'w': 5,
+    'f': 6, 'o': 6, 'x': 6,
+    'g': 7, 'p': 7, 'y': 7,
+    'h': 8, 'q': 8, 'z': 8,
+    'i': 9, 'r': 9
+  };
+  
+  // Calculate the sum of all letters
+  let nameSum = 0;
+  name.toLowerCase().split('').forEach(letter => {
+    if (letterValues[letter]) {
+      nameSum += letterValues[letter];
+    }
+  });
+  
+  // Reduce to a single digit, except for master numbers
+  let nameVibration = nameSum;
+  while (nameVibration > 9 && nameVibration !== 11 && nameVibration !== 22 && nameVibration !== 33) {
+    let tempSum = 0;
+    nameVibration.toString().split('').forEach(digit => {
+      tempSum += parseInt(digit);
+    });
+    nameVibration = tempSum;
+  }
+  
+  const nameVibrationMeanings: Record<number, { qualities: string[]; influence: string }> = {
+    1: {
+      qualities: ["Leadership", "Independence", "Originality", "Pioneering", "Self-confidence"],
+      influence: "Your name carries a vibration of leadership and originality. It supports independent action and pioneering new paths. This name energy helps you stand out and be recognized for your uniqueness."
+    },
+    2: {
+      qualities: ["Cooperation", "Diplomacy", "Sensitivity", "Partnership", "Harmony"],
+      influence: "Your name carries a vibration of cooperation and harmony. It supports building relationships and partnerships. This name energy helps you be diplomatic and find balance in all situations."
+    },
+    3: {
+      qualities: ["Creativity", "Expression", "Joy", "Sociability", "Optimism"],
+      influence: "Your name carries a vibration of creativity and self-expression. It supports artistic endeavors and social connections. This name energy helps you communicate effectively and bring joy to others."
+    },
+    4: {
+      qualities: ["Stability", "Organization", "Reliability", "Practicality", "Discipline"],
+      influence: "Your name carries a vibration of stability and reliability. It supports practical achievements and building solid foundations. This name energy helps you create order and manifest through disciplined effort."
+    },
+    5: {
+      qualities: ["Freedom", "Versatility", "Adventure", "Change", "Adaptability"],
+      influence: "Your name carries a vibration of freedom and versatility. It supports change, travel, and new experiences. This name energy helps you adapt to varying circumstances and embrace progressive ideas."
+    },
+    6: {
+      qualities: ["Responsibility", "Nurturing", "Harmony", "Service", "Balance"],
+      influence: "Your name carries a vibration of responsibility and nurturing. It supports creating harmony and being of service. This name energy helps you care for others and create beauty in your environment."
+    },
+    7: {
+      qualities: ["Analysis", "Wisdom", "Spirituality", "Research", "Introspection"],
+      influence: "Your name carries a vibration of wisdom and analysis. It supports spiritual development and seeking truth. This name energy helps you develop deep understanding and connect to your inner wisdom."
+    },
+    8: {
+      qualities: ["Achievement", "Authority", "Abundance", "Power", "Management"],
+      influence: "Your name carries a vibration of achievement and authority. It supports material success and executive ability. This name energy helps you manifest abundance and develop your personal power."
+    },
+    9: {
+      qualities: ["Compassion", "Universality", "Humanitarian", "Completion", "Idealism"],
+      influence: "Your name carries a vibration of compassion and universal awareness. It supports humanitarian service and completion of cycles. This name energy helps you connect with the bigger picture and serve with love."
+    },
+    11: {
+      qualities: ["Intuition", "Inspiration", "Spiritual insight", "Idealism", "Sensitivity"],
+      influence: "Your name carries a master vibration of intuition and inspiration. It supports spiritual insight and visionary ideas. This name energy helps you inspire others and access higher consciousness."
+    },
+    22: {
+      qualities: ["Master builder", "Practical vision", "Leadership", "Manifestation", "Large-scale success"],
+      influence: "Your name carries a master vibration of the builder. It supports manifesting big visions into reality. This name energy helps you create structures that benefit many and achieve significant material success."
+    },
+    33: {
+      qualities: ["Master teacher", "Compassion", "Healing", "Nurturing", "Spiritual upliftment"],
+      influence: "Your name carries a master vibration of the compassionate teacher. It supports healing and uplifting others. This name energy helps you express unconditional love and serve humanity at the highest level."
+    }
+  };
+  
+  return {
+    vibration: nameVibration,
+    qualities: nameVibrationMeanings[nameVibration]?.qualities || ["Unique", "Individual", "Cosmic", "Mystical", "Evolving"],
+    influence: nameVibrationMeanings[nameVibration]?.influence || "Your name carries a unique cosmic vibration that influences your life in personalized ways. It supports your individual path and spiritual evolution."
+  };
+};
+
+/**
+ * Calculate spiritual path number based on birth date
+ */
+export const calculateSpiritualPath = (birthDate: Date): { number: number; purpose: string; practices: string[] } => {
+  const day = birthDate.getDate();
+  const month = birthDate.getMonth() + 1;
+  const year = birthDate.getFullYear();
+  
+  // Calculate path number using day, month, and year
+  let pathSum = day + month + year;
+  
+  // Reduce to a single digit, except for master numbers
+  while (pathSum > 9 && pathSum !== 11 && pathSum !== 22 && pathSum !== 33) {
+    let tempSum = 0;
+    pathSum.toString().split('').forEach(digit => {
+      tempSum += parseInt(digit);
+    });
+    pathSum = tempSum;
+  }
+  
+  const spiritualPathMeanings: Record<number, { purpose: string; practices: string[] }> = {
+    1: {
+      purpose: "To pioneer new spiritual understandings and lead others with your individual insights.",
+      practices: ["Solo meditation", "Innovative spiritual practices", "Leadership in spiritual communities", "Developing unique spiritual viewpoints", "Pioneering new spiritual paths"]
+    },
+    2: {
+      purpose: "To create harmony and build bridges between different spiritual traditions.",
+      practices: ["Partner meditation", "Listening to inner guidance", "Peace-making", "Intuitive development", "Finding balance between spiritual polarities"]
+    },
+    3: {
+      purpose: "To express spiritual truths creatively and communicate divine inspiration.",
+      practices: ["Creative visualization", "Expressing spirituality through art", "Joyful celebration of divine", "Teaching through storytelling", "Channeling higher wisdom through creative works"]
+    },
+    4: {
+      purpose: "To build solid spiritual foundations and create practical systems for spiritual growth.",
+      practices: ["Disciplined spiritual routines", "Grounding practices", "Creating sacred spaces", "Study of spiritual texts", "Building spiritual community structures"]
+    },
+    5: {
+      purpose: "To experience spiritual freedom and embrace diverse paths to truth.",
+      practices: ["Movement meditation", "Exploration of different spiritual traditions", "Freedom from dogma", "Adventure in consciousness", "Embracing change as spiritual practice"]
+    },
+    6: {
+      purpose: "To nurture others spiritually and create harmony in your spiritual community.",
+      practices: ["Service to others", "Creating beauty as spiritual practice", "Family spiritual traditions", "Healing work", "Balancing spiritual and material responsibilities"]
+    },
+    7: {
+      purpose: "To seek spiritual truth through analysis and contemplation of life's mysteries.",
+      practices: ["Deep meditation", "Spiritual research", "Metaphysical study", "Contemplative practices", "Developing psychic abilities"]
+    },
+    8: {
+      purpose: "To manifest spiritual abundance and use material resources for higher purposes.",
+      practices: ["Abundance meditation", "Conscious manifestation", "Spiritual leadership", "Creating prosperity with purpose", "Building spiritual-material bridges"]
+    },
+    9: {
+      purpose: "To serve humanity with universal love and compassion.",
+      practices: ["Compassion meditation", "Humanitarian service", "Universal spiritual views", "Forgiveness work", "Transcending spiritual limitations"]
+    },
+    11: {
+      purpose: "To inspire spiritual awakening in others through your intuitive insights.",
+      practices: ["Channel spiritual information", "Intuitive guidance work", "Inspirational speaking or writing", "Visionary art", "Raising collective consciousness"]
+    },
+    22: {
+      purpose: "To build practical spiritual structures that transform society on a large scale.",
+      practices: ["Manifestation of spiritual communities", "Creating spiritual educational systems", "Building bridges between science and spirituality", "Transforming social structures", "Practical application of spiritual principles"]
+    },
+    33: {
+      purpose: "To uplift humanity through your compassionate teaching and unconditional love.",
+      practices: ["Heart-centered meditation", "Teaching with love", "Healing through presence", "Unconditional love as practice", "Spiritual nurturing of humanity"]
+    }
+  };
+  
+  return {
+    number: pathSum,
+    purpose: spiritualPathMeanings[pathSum]?.purpose || "To discover and fulfill your unique spiritual purpose in this lifetime.",
+    practices: spiritualPathMeanings[pathSum]?.practices || ["Meditation", "Self-reflection", "Spiritual study", "Connecting with nature", "Service to others"]
+  };
+};

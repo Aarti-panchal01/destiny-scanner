@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import PalmScanner from "@/components/PalmScanner";
@@ -12,7 +11,7 @@ import { Scan, Stars, Calendar, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculateAstrologicalDetails } from "@/utils/astrologicalCalculations";
-import { calculateNumerologyProfile, NumerologyProfile } from "@/utils/numerologyCalculator";
+import { calculateNumerologyProfile, NumerologyProfile, calculatePersonalYear, calculatePersonalMonth, analyzeNameNumerology, calculateSpiritualPath } from "@/utils/numerologyCalculator";
 
 interface PalmFeatures {
   lifeLineLength?: number;
@@ -33,6 +32,7 @@ const Index = () => {
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined);
   const [birthTime, setBirthTime] = useState<string>("");
   const [birthLocation, setBirthLocation] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const [destinyNumber, setDestinyNumber] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [useEnhancedAPI, setUseEnhancedAPI] = useState(false);
@@ -44,6 +44,12 @@ const Index = () => {
   const [palmInsights, setPalmInsights] = useState<string[] | undefined>(undefined);
   const [dailyForecast, setDailyForecast] = useState<string | undefined>(undefined);
   const [luckyDates, setLuckyDates] = useState<string[] | undefined>(undefined);
+  const [pastLifeInfluences, setPastLifeInfluences] = useState<string[] | undefined>(undefined);
+  const [karmicLessons, setKarmicLessons] = useState<string[] | undefined>(undefined);
+  const [personalYear, setPersonalYear] = useState<any | undefined>(undefined);
+  const [personalMonth, setPersonalMonth] = useState<any | undefined>(undefined);
+  const [nameAnalysis, setNameAnalysis] = useState<any | undefined>(undefined);
+  const [spiritualPath, setSpiritualPath] = useState<any | undefined>(undefined);
   const [isApiLoading, setIsApiLoading] = useState(false);
 
   const calculateDestiny = async () => {
@@ -59,7 +65,6 @@ const Index = () => {
     if (useEnhancedAPI) {
       setIsApiLoading(true);
       try {
-        // Use enhanced API for more accurate and detailed destiny calculation
         const enhancedResult = await getEnhancedDestiny(birthDate, birthTime || undefined, birthLocation || undefined);
         
         setDestinyNumber(enhancedResult.destinyNumber);
@@ -69,6 +74,8 @@ const Index = () => {
         setSpecialTraits(enhancedResult.specialTraits);
         setDailyForecast(enhancedResult.dailyForecast);
         setLuckyDates(enhancedResult.luckyDates);
+        setPastLifeInfluences(enhancedResult.pastLifeInfluences);
+        setKarmicLessons(enhancedResult.karmicLessons);
         
         toast({
           title: "Enhanced Destiny Revealed!",
@@ -77,12 +84,24 @@ const Index = () => {
         });
       } catch (error) {
         console.error("Error with enhanced destiny API:", error);
-        // Fallback to basic calculation
         const number = calculateDestinyNumber(birthDate);
         setDestinyNumber(number);
         
-        // Set basic numerology profile without API
-        setNumerologyProfile(calculateNumerologyProfile(birthDate));
+        const numerologyData = calculateNumerologyProfile(birthDate);
+        setNumerologyProfile(numerologyData);
+        
+        const astroDetails = calculateAstrologicalDetails(birthDate, birthTime, birthLocation);
+        setPastLifeInfluences(astroDetails.pastLifeInfluences);
+        setKarmicLessons(astroDetails.karmicLessons);
+        
+        setPersonalYear(calculatePersonalYear(birthDate));
+        setPersonalMonth(calculatePersonalMonth(birthDate));
+        
+        if (name && name.trim() !== '') {
+          setNameAnalysis(analyzeNameNumerology(name));
+        }
+        
+        setSpiritualPath(calculateSpiritualPath(birthDate));
         
         toast({
           title: "Destiny Revealed!",
@@ -93,12 +112,25 @@ const Index = () => {
         setIsApiLoading(false);
       }
     } else {
-      // Use basic calculation without API
       const number = calculateDestinyNumber(birthDate);
       setDestinyNumber(number);
       
-      // Clear enhanced data
-      setNumerologyProfile(undefined);
+      const numerologyData = calculateNumerologyProfile(birthDate);
+      setNumerologyProfile(numerologyData);
+      
+      const astroDetails = calculateAstrologicalDetails(birthDate, birthTime, birthLocation);
+      setPastLifeInfluences(astroDetails.pastLifeInfluences);
+      setKarmicLessons(astroDetails.karmicLessons);
+      
+      setPersonalYear(calculatePersonalYear(birthDate));
+      setPersonalMonth(calculatePersonalMonth(birthDate));
+      
+      if (name && name.trim() !== '') {
+        setNameAnalysis(analyzeNameNumerology(name));
+      }
+      
+      setSpiritualPath(calculateSpiritualPath(birthDate));
+      
       setSpecialTraits(undefined);
       setDailyForecast(undefined);
       setLuckyDates(undefined);
@@ -119,7 +151,6 @@ const Index = () => {
       setPalmFeatures(features);
       setPalmInsights(insights);
       
-      // Generate generic insights based on palm features if not provided
       if (!insights && features.dominantMount) {
         const mountInsights: Record<string, string> = {
           'Venus': 'You have strong creative and romantic tendencies',
@@ -158,8 +189,8 @@ const Index = () => {
             Destiny Scanner
           </h1>
           <p className="text-lg md:text-xl text-cosmic-light-purple/80 max-w-2xl mx-auto">
-            Discover your life path and cosmic destiny through ancient numerology. 
-            Choose to enter your birth date or scan your palm to reveal what the universe has in store for you.
+            Discover your life path and cosmic destiny through ancient numerology and astrology. 
+            Enter your birth details or scan your palm to reveal what the universe has in store for you.
           </p>
         </motion.div>
 
@@ -191,31 +222,46 @@ const Index = () => {
               <DateSelector date={birthDate} setDate={setBirthDate} />
               
               <div className="space-y-4 mb-5 mt-4">
-                {/* Advanced input fields for birth time and location */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="birth-time" className="block text-sm text-cosmic-light-purple mb-1">
-                      Birth Time (Optional)
-                    </label>
-                    <input
-                      type="time"
-                      id="birth-time"
-                      value={birthTime}
-                      onChange={(e) => setBirthTime(e.target.value)}
-                      className="w-full bg-cosmic-dark/30 border border-cosmic-purple/30 rounded-md p-2 text-cosmic-light-purple focus:outline-none focus:ring-1 focus:ring-cosmic-purple"
-                    />
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="birth-time" className="block text-sm text-cosmic-light-purple mb-1">
+                        Birth Time (Optional)
+                      </label>
+                      <input
+                        type="time"
+                        id="birth-time"
+                        value={birthTime}
+                        onChange={(e) => setBirthTime(e.target.value)}
+                        className="w-full bg-cosmic-dark/30 border border-cosmic-purple/30 rounded-md p-2 text-cosmic-light-purple focus:outline-none focus:ring-1 focus:ring-cosmic-purple"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="birth-location" className="block text-sm text-cosmic-light-purple mb-1">
+                        Birth Location (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        id="birth-location"
+                        value={birthLocation}
+                        onChange={(e) => setBirthLocation(e.target.value)}
+                        placeholder="City, Country"
+                        className="w-full bg-cosmic-dark/30 border border-cosmic-purple/30 rounded-md p-2 text-cosmic-light-purple focus:outline-none focus:ring-1 focus:ring-cosmic-purple"
+                      />
+                    </div>
                   </div>
                   
                   <div>
-                    <label htmlFor="birth-location" className="block text-sm text-cosmic-light-purple mb-1">
-                      Birth Location (Optional)
+                    <label htmlFor="name-analysis" className="block text-sm text-cosmic-light-purple mb-1">
+                      Your Full Name (For Name Analysis)
                     </label>
                     <input
                       type="text"
-                      id="birth-location"
-                      value={birthLocation}
-                      onChange={(e) => setBirthLocation(e.target.value)}
-                      placeholder="City, Country"
+                      id="name-analysis"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Enter your full name"
                       className="w-full bg-cosmic-dark/30 border border-cosmic-purple/30 rounded-md p-2 text-cosmic-light-purple focus:outline-none focus:ring-1 focus:ring-cosmic-purple"
                     />
                   </div>
@@ -298,6 +344,13 @@ const Index = () => {
                             </div>
                           </div>
                         </div>
+                        
+                        {astroDetails.dailyMantra && (
+                          <div className="mt-3 bg-cosmic-purple/10 p-2 rounded-md">
+                            <p className="text-cosmic-light-purple font-medium mb-1">Daily Mantra:</p>
+                            <p className="text-xs italic">"{astroDetails.dailyMantra}"</p>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}
@@ -347,6 +400,12 @@ const Index = () => {
             palmInsights={palmInsights}
             dailyForecast={dailyForecast}
             luckyDates={luckyDates}
+            pastLifeInfluences={pastLifeInfluences}
+            karmicLessons={karmicLessons}
+            personalYear={personalYear}
+            personalMonth={personalMonth}
+            nameAnalysis={nameAnalysis}
+            spiritualPath={spiritualPath}
           />
         )}
 
