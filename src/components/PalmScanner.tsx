@@ -1,20 +1,25 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { Scan, Camera, Pause, Play } from "lucide-react";
+import { Scan, Camera, Pause, Play, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { analyzePalmImage } from "@/utils/apiService";
 
 interface PalmScannerProps {
-  onScanComplete: (destinyNumber: number) => void;
+  onScanComplete: (destinyNumber: number, palmFeatures?: any) => void;
 }
 
 const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
   const [isScanning, setIsScanning] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [consentGiven, setConsentGiven] = useState(false);
+  const [useEnhancedAPI, setUseEnhancedAPI] = useState(false);
+  const [processingPercentage, setProcessingPercentage] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -68,7 +73,7 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
     }
   };
 
-  const capturePalmImage = () => {
+  const capturePalmImage = async () => {
     if (!consentGiven) {
       toast({
         title: "Consent Required",
@@ -88,6 +93,15 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
     }
 
     setIsScanning(true);
+    setProcessingPercentage(0);
+
+    // Animation for processing percentage
+    const processingInterval = setInterval(() => {
+      setProcessingPercentage(prev => {
+        const newValue = prev + Math.random() * 15;
+        return newValue > 95 ? 95 : newValue;
+      });
+    }, 250);
 
     // Draw current video frame to canvas
     if (videoRef.current && canvasRef.current) {
@@ -102,43 +116,48 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
           videoRef.current.videoHeight
         );
 
-        // In a real app, we would send this image to a palm reading API
-        // For now, we'll simulate with a randomized but consistent result
+        // Get image data for API processing
+        const imageData = canvasRef.current.toDataURL('image/jpeg');
         
-        // Simulate analyzing for 3 seconds
-        setTimeout(() => {
-          // Get some data from the canvas to generate a stable "random" number
-          const imageData = ctx.getImageData(
-            0, 0, 
-            Math.min(100, canvasRef.current!.width), 
-            Math.min(100, canvasRef.current!.height)
-          );
+        try {
+          // Use the API service for palm analysis
+          const analysisResult = await analyzePalmImage(imageData, useEnhancedAPI);
           
-          let hash = 0;
-          // Use the first 1000 pixels to generate a hash
-          for (let i = 0; i < Math.min(imageData.data.length, 1000); i++) {
-            hash = ((hash << 5) - hash) + imageData.data[i];
-            hash |= 0; // Convert to 32bit integer
+          clearInterval(processingInterval);
+          setProcessingPercentage(100);
+          
+          if (analysisResult.success) {
+            toast({
+              title: "Palm Analysis Complete",
+              description: useEnhancedAPI 
+                ? `Analysis completed with ${Math.round(analysisResult.confidence * 100)}% confidence` 
+                : "Your palm has been analyzed successfully!",
+              variant: "default",
+            });
+            
+            // Submit the destiny number and additional palm features if available
+            onScanComplete(
+              analysisResult.destinyNumber, 
+              analysisResult.palmFeatures
+            );
+          } else {
+            toast({
+              title: "Analysis Failed",
+              description: analysisResult.error || "Could not determine your destiny number",
+              variant: "destructive",
+            });
           }
-          
-          // Generate a number between 1 and 9, or master numbers 11, 22, 33
-          let destinyNumber = Math.abs(hash) % 100;
-          if (destinyNumber > 33) {
-            destinyNumber = destinyNumber % 9 + 1;
-          } else if (destinyNumber > 9 && destinyNumber !== 11 && destinyNumber !== 22 && destinyNumber !== 33) {
-            destinyNumber = destinyNumber % 9 + 1;
-          }
-          
-          setIsScanning(false);
-          
+        } catch (error) {
+          console.error("Error during palm analysis:", error);
           toast({
-            title: "Palm Scan Complete",
-            description: "Your palm has been analyzed successfully!",
-            variant: "default",
+            title: "Processing Error",
+            description: "An error occurred while analyzing your palm",
+            variant: "destructive",
           });
-          
-          onScanComplete(destinyNumber);
-        }, 3000);
+        } finally {
+          clearInterval(processingInterval);
+          setIsScanning(false);
+        }
       }
     }
   };
@@ -228,7 +247,7 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
       
       <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
       
-      <div className="flex items-center space-x-2 mb-6">
+      <div className="flex items-center space-x-2 mb-4">
         <Checkbox 
           id="consent" 
           checked={consentGiven}
@@ -241,6 +260,37 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
         >
           I consent to the analysis of my palm for destiny reading purposes
         </label>
+      </div>
+
+      <div className="flex items-center space-x-2 mb-6">
+        <div className="flex items-center flex-1 space-x-2">
+          <Switch
+            id="enhanced-mode"
+            checked={useEnhancedAPI}
+            onCheckedChange={setUseEnhancedAPI}
+            className="data-[state=checked]:bg-cosmic-gold"
+          />
+          <label
+            htmlFor="enhanced-mode"
+            className="text-sm font-medium text-cosmic-light-purple cursor-pointer"
+          >
+            Enhanced Analysis Mode
+          </label>
+        </div>
+        
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Info className="h-4 w-4 text-cosmic-light-purple/60 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent className="bg-cosmic-dark border-cosmic-purple/50 text-cosmic-light-purple">
+              <p className="max-w-xs">
+                Enhanced mode uses our advanced API for higher accuracy palm readings, 
+                including detection of life lines, heart lines, and fate lines.
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       <Button 
@@ -257,7 +307,7 @@ const PalmScanner = ({ onScanComplete }: PalmScannerProps) => {
             >
               <Scan className="h-5 w-5" />
             </motion.div>
-            Analyzing Palm...
+            Analyzing Palm... {processingPercentage.toFixed(0)}%
           </>
         ) : (
           <>
