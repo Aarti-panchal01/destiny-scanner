@@ -92,7 +92,7 @@ const Index = () => {
               <DateSelector date={birthDate} setDate={setBirthDate} />
               <Button 
                 onClick={calculateDestiny}
-                className="cosmic-button w-full flex items-center justify-center"
+                className="cosmic-button w-full flex items-center justify-center mt-6"
               >
                 <Scan className="mr-2 h-5 w-5" />
                 Reveal Your Destiny
