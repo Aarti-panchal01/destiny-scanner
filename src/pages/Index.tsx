@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import PalmScanner from "@/components/PalmScanner";
@@ -8,7 +9,7 @@ import { getZodiacSign } from "@/utils/zodiacCalculator";
 import { getEnhancedDestiny, analyzePalmImage, EnhancedDestinyResponse } from "@/utils/apiService";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Scan, Stars, Calendar, Info } from "lucide-react";
+import { Scan, Stars, Calendar, Info, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { calculateAstrologicalDetails } from "@/utils/astrologicalCalculations";
@@ -177,6 +178,22 @@ const Index = () => {
     <>
       <div className="stars-bg" />
       <div className="min-h-screen container py-12 px-4 max-w-4xl">
+        {/* ACE INFINITY Brand Promotion Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 py-2 px-4 bg-cosmic-purple/10 border border-cosmic-purple/30 rounded-lg text-center"
+        >
+          <div className="flex items-center justify-center space-x-2">
+            <Sparkles className="h-5 w-5 text-cosmic-gold animate-pulse" />
+            <p className="text-sm md:text-base font-medium bg-gradient-to-r from-cosmic-gold to-cosmic-light-purple bg-clip-text text-transparent">
+              PREMIUM COSMIC INSIGHTS POWERED BY <span className="font-bold">ACE INFINITY</span>
+            </p>
+            <Sparkles className="h-5 w-5 text-cosmic-gold animate-pulse" />
+          </div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -194,6 +211,14 @@ const Index = () => {
             Discover your life path and cosmic destiny through ancient numerology and astrology. 
             Enter your birth details or scan your palm to reveal what the universe has in store for you.
           </p>
+          
+          {/* ACE INFINITY Secondary Brand Mention */}
+          <div className="mt-3 flex justify-center">
+            <div className="inline-flex items-center py-1 px-3 bg-cosmic-dark/40 border border-cosmic-purple/20 rounded-full">
+              <span className="text-xs text-cosmic-light-purple/70">Advanced cosmic algorithms by </span>
+              <span className="ml-1 text-xs font-bold text-cosmic-gold">ACE INFINITY</span>
+            </div>
+          </div>
         </motion.div>
 
         <motion.div
