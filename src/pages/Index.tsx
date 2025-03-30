@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DateSelector from "@/components/DateSelector";
 import PalmScanner from "@/components/PalmScanner";
@@ -420,6 +419,10 @@ const Index = () => {
             <br />
             Remember that you always have the power to shape your own path through conscious choices and actions.
           </p>
+        </div>
+        
+        <div className="mt-8 text-center text-xs text-cosmic-light-purple/40">
+          🌟 Powered by <span className="font-bold text-cosmic-light-purple/60">ACE INFINITY</span> 🌟
         </div>
       </div>
     </>
